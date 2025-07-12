@@ -14,6 +14,10 @@ UCLASS()
 class GAS_AURA_API AAuraEnemyCharacter : public AAuraCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay()override;
+
 public:
 	AAuraEnemyCharacter();
 	virtual void HightlightActor() override;
@@ -21,4 +25,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHightlighted = false;
+
+
 };

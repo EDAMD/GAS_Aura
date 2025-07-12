@@ -6,13 +6,27 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
+void AAuraEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
 AAuraEnemyCharacter::AAuraEnemyCharacter()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 	// 为敌人创建 ASC 及 AS
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetIsReplicated(true); // 设置ASC为可复制的 由 服务器 向 客户端 复制
+	
+	// 设置ASC为可复制的 由 服务器 向 客户端 复制
+	AbilitySystemComponent->SetIsReplicated(true); 
+	
+	// 设置属性同步模式 - AI 控制的敌人 使用 Minimal 模式
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal); 
+	
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	
 }
