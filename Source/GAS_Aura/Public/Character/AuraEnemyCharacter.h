@@ -18,6 +18,8 @@ class GAS_AURA_API AAuraEnemyCharacter : public AAuraCharacterBase, public IEnem
 protected:
 	virtual void BeginPlay()override;
 
+	void InitAbilityActorInfo() override;
+
 public:
 	AAuraEnemyCharacter();
 	virtual void HightlightActor() override;
