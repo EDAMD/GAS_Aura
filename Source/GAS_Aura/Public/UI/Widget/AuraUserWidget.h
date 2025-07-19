@@ -24,7 +24,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void WidgetControllerSet();
+	void WidgetControllerSet(); // SetWidgetController() ºóµ÷ÓÃ
 
 	
 };
