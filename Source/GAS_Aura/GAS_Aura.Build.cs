@@ -17,6 +17,8 @@ public class GAS_Aura : ModuleRules
             "GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
+            "Slate",
+			"SlateCore"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { 

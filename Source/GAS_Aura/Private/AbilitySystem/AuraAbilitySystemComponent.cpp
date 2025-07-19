@@ -3,10 +3,13 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Runtime/GameplayTags/Classes/GameplayTagContainer.h"
+#include "AuraGameplayTags.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+
+	const FAuraGameplayTags GameplayTag = FAuraGameplayTags::Get();
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(
