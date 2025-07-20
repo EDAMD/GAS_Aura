@@ -36,7 +36,6 @@ UAuraAttributeSet::UAuraAttributeSet()
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 
-
 	// Vital Attributes
 	// 设置Health的复制条件, 复制通知, 无任何条件复制, 总是通知数值
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);

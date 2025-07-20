@@ -7,8 +7,8 @@
 UAuraAssetManager& UAuraAssetManager::Get()
 {
 	check(GEngine);
-	UAuraAssetManager* AuraAssertManater = Cast<UAuraAssetManager>(GEngine->AssetManager.Get());
-	return *AuraAssertManater;
+	UAuraAssetManager* AuraAssertManager = Cast<UAuraAssetManager>(GEngine->AssetManager.Get());
+	return *AuraAssertManager;
 }
 
 void UAuraAssetManager::StartInitialLoading()
