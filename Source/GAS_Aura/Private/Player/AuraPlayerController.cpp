@@ -58,7 +58,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
 void AAuraPlayerController::AutoRun()
 {
-	if (!bAutoRunning) return;
+	if (!bAutoRunning) return; // 判断是否自动移动条件
 	if (APawn* ControlledPawn = GetPawn())
 	{
 		FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
@@ -102,7 +102,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 
@@ -126,38 +125,51 @@ void AAuraPlayerController::CursorTrace()
 	 *  E. Both Actors are valid, LastActor == ThisActor
 	 *		- 光标一直指向同一个敌人, Do nothing
 	 */
-
-	if (LastActor == nullptr) // LastActor is null
-	{
-		if (ThisActor != nullptr)
+	/*{
+		if (LastActor == nullptr) // LastActor is null
 		{
-			// Case B
-			ThisActor->HightlightActor();
-		}
-		else
-		{
-			// Case A - do nothing
-		}
-	}
-	else // LastActor is Valid
-	{
-		if (ThisActor == nullptr)
-		{
-			// Case C
-			LastActor->UnHightlightActor();
-		}
-		else // Both Actors are Valid
-		{
-			if (LastActor != ThisActor)
+			if (ThisActor != nullptr)
 			{
-				// Case D
-				LastActor->UnHightlightActor();
+				// Case B
 				ThisActor->HightlightActor();
 			}
 			else
 			{
-				// Case E - do nothing
+				// Case A - do nothing
 			}
+		}
+		else // LastActor is Valid
+		{
+			if (ThisActor == nullptr)
+			{
+				// Case C
+				LastActor->UnHightlightActor();
+			}
+			else // Both Actors are Valid
+			{
+				if (LastActor != ThisActor)
+				{
+					// Case D
+					LastActor->UnHightlightActor();
+					ThisActor->HightlightActor();
+				}
+				else
+				{
+					// Case E - do nothing
+				}
+			}
+		}
+	}*/
+
+	if (LastActor != ThisActor)
+	{
+		if (LastActor)
+		{
+			LastActor->UnHightlightActor();
+		}
+		if (ThisActor)
+		{
+			ThisActor->HightlightActor();
 		}
 	}
 
@@ -206,14 +218,13 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Green, false, 5.f);
 				}
+				// 将曲线最后一点作为终点, 防止有些不能到达的点造成一直移动的bug
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 				bAutoRunning = true;
 			}
 		}
 		FollowTime = 0.f;
 	}
-
-
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
@@ -242,10 +253,10 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 		}
 
 		if (APawn* ControlledPawn = GetPawn())
@@ -254,7 +265,6 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 			ControlledPawn->AddMovementInput(WorldDirection);
 		}
 	}
-
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
