@@ -18,7 +18,8 @@ public class GAS_Aura : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
             "Slate",
-			"SlateCore"
+			"SlateCore",
+			"NavigationSystem",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { 
