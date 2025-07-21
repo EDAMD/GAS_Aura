@@ -30,7 +30,7 @@ void UTargetDataUnderMouse::Activate()
 			ActivationPredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);
 
 		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(SpecHandle, ActivationPredictionKey);
-		if (bCalledDelegate)
+		if (!bCalledDelegate)
 		{
 			SetWaitingOnRemotePlayerData();
 		}
