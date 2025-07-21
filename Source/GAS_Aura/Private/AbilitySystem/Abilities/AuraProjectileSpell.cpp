@@ -13,8 +13,13 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	
+}
+
+void UAuraProjectileSpell::SpawnProjectile()
+{
 	// 判断是否在服务器, 只在服务器生成
-    const bool bIsServet = HasAuthority(&ActivationInfo);
+	const bool bIsServet = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServet)
 	{
 		return;
@@ -39,5 +44,5 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		// TODO: Give the projectile a Gameplay Effect Spec for causing damage
 
 		Projectile->FinishSpawning(SpawnTransform);
- 	}
+	}
 }
