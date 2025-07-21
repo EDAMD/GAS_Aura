@@ -2,7 +2,10 @@
 
 
 #include "AuraAssetManager.h"
+
+#include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystemGlobals.h"
 
 UAuraAssetManager& UAuraAssetManager::Get()
 {
@@ -16,4 +19,7 @@ void UAuraAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 
 	FAuraGameplayTags::InitializedNativeGameplayTags();
+
+	// 这是使用 TargetDaTa 必须要干的
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }
