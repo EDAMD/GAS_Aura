@@ -11,6 +11,9 @@ AAuraProjectile::AAuraProjectile()
 
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 设置为可复制, 由服务器生产, 复制到客户端
+	bReplicates = true;
+
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);

@@ -24,4 +24,6 @@ class GAS_AURA_API ICombatInterface
 public:
 	// Declare the pure virtual function to fix the error
 	virtual int32 GetPlayerLevel();
+
+	virtual FVector GetCombatSocketLocation();
 };
