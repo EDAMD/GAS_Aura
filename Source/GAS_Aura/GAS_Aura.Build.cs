@@ -20,6 +20,7 @@ public class GAS_Aura : ModuleRules
             "Slate",
 			"SlateCore",
 			"NavigationSystem",
+			"Niagara",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { 
