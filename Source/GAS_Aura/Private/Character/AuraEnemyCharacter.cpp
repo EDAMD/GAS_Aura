@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 void AAuraEnemyCharacter::BeginPlay()
 {
@@ -49,6 +50,11 @@ void AAuraEnemyCharacter::InitAbilityActorInfo()
 
 	InitializedDefaultAttributes();
 
+}
+
+void AAuraEnemyCharacter::InitializedDefaultAttributes()
+{
+	UAuraAbilitySystemLibrary::InitializedDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 AAuraEnemyCharacter::AAuraEnemyCharacter()

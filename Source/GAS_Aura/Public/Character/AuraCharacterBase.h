@@ -54,7 +54,9 @@ protected:
 
 	// 使用GE初始化角色 Primary Attributes
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
-	void InitializedDefaultAttributes();
+
+	// 使用 函数库 初始化敌人属性
+	virtual void InitializedDefaultAttributes();
 
 	void AddCharacterAbilities();
 private:
