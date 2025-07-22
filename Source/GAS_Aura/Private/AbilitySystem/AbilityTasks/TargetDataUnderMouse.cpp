@@ -46,10 +46,10 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 	PC->GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 
 	// 创建 Data 及 DataHandle 打包
-	FGameplayAbilityTargetData_SingleTargetHit Data = FGameplayAbilityTargetData_SingleTargetHit();
-	Data.HitResult = CursorHit;
+	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
+	Data->HitResult = CursorHit;
 	FGameplayAbilityTargetDataHandle DataHandle;
-	DataHandle.Add(&Data);
+	DataHandle.Add(Data);
 
 	AbilitySystemComponent->ServerSetReplicatedTargetData(
 		GetAbilitySpecHandle(),
