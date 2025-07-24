@@ -71,7 +71,7 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	// 创建 Tag -> FGameplayAttribute(*)() 的映射, 方便通过 Tag 获取 GameplayAttribute
+	// 创建 Tag -> FGameplayAttribute(*)() 的映射, 方便通过 Tag 获取 GameplayAttribute ,用于实现属性面板值显示与变化
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 
 	/*
@@ -151,6 +151,13 @@ public:
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
+
+	/*
+	* Damage Meta Attribuet
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributee")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 
 	// 当服务器数值变化, 客户端复制属性时调用 2.
