@@ -8,20 +8,29 @@
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AuraGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void AAuraEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
 	check(AbilitySystemComponent);
 	InitAbilityActorInfo();
+
+	// 初始化初始能力
+	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 
 	// 将自己设置为 UI 的控制器
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
 		AuraUserWidget->SetWidgetController(this);
 	}
+
 	
+
+	// 绑定 血量变化时, 代理
 	if (const UAuraAttributeSet* AuraAS = CastChecked<UAuraAttributeSet>(AttributeSet))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda(
@@ -38,10 +47,22 @@ void AAuraEnemyCharacter::BeginPlay()
 			}
 		);
 
+		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this,
+			&AAuraEnemyCharacter::HitReactTagChanged
+		);
+
 		OnHealthChanged.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());
 	}
 }
+
+void AAuraEnemyCharacter::HitReactTagChanged(FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReaction = NewCount > 0 ? true : false;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReaction ? 0.f : BaseWalkSpeed;
+}
+
 
 void AAuraEnemyCharacter::InitAbilityActorInfo()
 {
@@ -96,3 +117,4 @@ int32 AAuraEnemyCharacter::GetPlayerLevel()
 {
 	return Level;
 }
+

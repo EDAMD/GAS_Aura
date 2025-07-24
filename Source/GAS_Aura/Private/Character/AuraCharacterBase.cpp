@@ -38,6 +38,12 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
+{
+	check(HitReactMontage);
+	return HitReactMontage;
+}
+
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
 
