@@ -14,6 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class USplineComponent;
+class UDamageTextComponent;
 
 /**
  * 
@@ -25,6 +26,9 @@ class GAS_AURA_API AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamage(float DamageAmount, ACharacter* TargetCharacter);
 
 protected:
 	virtual	void BeginPlay() override;
@@ -78,4 +82,7 @@ private:
 	TObjectPtr<USplineComponent> Spline;					// ÑùÌõÇúÏß
 
 	void AutoRun();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };
