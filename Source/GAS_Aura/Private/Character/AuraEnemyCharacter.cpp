@@ -19,8 +19,11 @@ void AAuraEnemyCharacter::BeginPlay()
 	check(AbilitySystemComponent);
 	InitAbilityActorInfo();
 
-	// 初始化初始能力
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	if (HasAuthority())
+	{
+		// 初始化初始能力
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
 
 	// 将自己设置为 UI 的控制器
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -69,7 +72,10 @@ void AAuraEnemyCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
-	InitializedDefaultAttributes();
+	if (HasAuthority())
+	{
+		InitializedDefaultAttributes();
+	}
 
 }
 

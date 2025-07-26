@@ -181,7 +181,7 @@ void UAuraAttributeSet::ShowFloatText(FEffectProperties& Props, float Damage, bo
 
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
-		AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
+		AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller);
 
 		PC->ShowDamage(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 	}
