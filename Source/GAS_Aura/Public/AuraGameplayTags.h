@@ -44,8 +44,11 @@ public:
 
 
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
 
 	FGameplayTag Effects_HitReact;
+
+	TArray<FGameplayTag> DamageTypes;
 
 protected:
 private:
