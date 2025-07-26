@@ -10,6 +10,9 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 void AAuraEnemyCharacter::BeginPlay()
 {
@@ -103,6 +106,19 @@ AAuraEnemyCharacter::AAuraEnemyCharacter()
 
 	HealthBar->SetupAttachment(RootComponent);
 
+}
+
+void AAuraEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority())
+	{
+		return;
+	}
+	AuraAIController = Cast<AAuraAIController>(NewController);
+
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AAuraEnemyCharacter::HightlightActor()
