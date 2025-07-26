@@ -9,6 +9,7 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
+#include "AuraAbilityTypes.h"
 
 // 需要捕获的属性 结构体
 struct AuraDamageStatics
@@ -64,9 +65,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetEffectContext();
+
 	FAggregatorEvaluateParameters EvaluateParam;
 	EvaluateParam.SourceTags = SourceTags;
 	EvaluateParam.TargetTags = TargetTags;
+
 
 	// 捕获变量
 
@@ -83,6 +87,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
 	Damage = bBlocked ? Damage * 0.5f : Damage;
 
+	// 设置 Context 中 是否阻挡
+	UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
 
 
 	// Get Character Class Info by AuraAbilitySystemLibrary
@@ -138,6 +144,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// Double Damage Plus a bonus if critical hit
 	Damage = bCriticalHit ? Damage * 2.f + SourceCriticalHitDamage : Damage;
+
+	UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 
 
 	// 输出变量
