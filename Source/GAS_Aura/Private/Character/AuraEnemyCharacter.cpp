@@ -62,8 +62,6 @@ void AAuraEnemyCharacter::BeginPlay()
 		AuraUserWidget->SetWidgetController(this);
 	}
 
-	
-
 	// 绑定 血量变化时, 代理
 	if (const UAuraAttributeSet* AuraAS = CastChecked<UAuraAttributeSet>(AttributeSet))
 	{
@@ -91,10 +89,26 @@ void AAuraEnemyCharacter::BeginPlay()
 	}
 }
 
+void AAuraEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority())
+	{
+		return;
+	}
+	AuraAIController = Cast<AAuraAIController>(NewController);
+
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
+}
+
 void AAuraEnemyCharacter::HitReactTagChanged(FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReaction = NewCount > 0 ? true : false;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReaction ? 0.f : BaseWalkSpeed;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReaction);
 }
 
 
@@ -113,21 +127,6 @@ void AAuraEnemyCharacter::InitAbilityActorInfo()
 void AAuraEnemyCharacter::InitializedDefaultAttributes()
 {
 	UAuraAbilitySystemLibrary::InitializedDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
-}
-
-
-
-void AAuraEnemyCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	if (!HasAuthority())
-	{
-		return;
-	}
-	AuraAIController = Cast<AAuraAIController>(NewController);
-
-	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
-	AuraAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AAuraEnemyCharacter::HightlightActor()
