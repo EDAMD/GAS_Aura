@@ -14,6 +14,34 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+AAuraEnemyCharacter::AAuraEnemyCharacter()
+{
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	// 为敌人创建 ASC 及 AS
+	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
+
+	// 设置ASC为可复制的 由 服务器 向 客户端 复制
+	AbilitySystemComponent->SetIsReplicated(true);
+
+	// 设置属性同步模式 - AI 控制的敌人 使用 Minimal 模式
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationPitch = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	
+
+
+
+	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthBar->SetupAttachment(RootComponent);
+
+}
+
 void AAuraEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -87,26 +115,7 @@ void AAuraEnemyCharacter::InitializedDefaultAttributes()
 	UAuraAbilitySystemLibrary::InitializedDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
-AAuraEnemyCharacter::AAuraEnemyCharacter()
-{
-	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
-	// 为敌人创建 ASC 及 AS
-	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
-
-	// 设置ASC为可复制的 由 服务器 向 客户端 复制
-	AbilitySystemComponent->SetIsReplicated(true);
-
-	// 设置属性同步模式 - AI 控制的敌人 使用 Minimal 模式
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-
-	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
-
-	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
-
-	HealthBar->SetupAttachment(RootComponent);
-
-}
 
 void AAuraEnemyCharacter::PossessedBy(AController* NewController)
 {

@@ -48,7 +48,10 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effect")
-	bool bDestroyOnEffectRemove = false;
+	bool bDestroyOnEffectApplication = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effect")
+	bool bApplyEffectsToEnemies = false;
 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effect")
