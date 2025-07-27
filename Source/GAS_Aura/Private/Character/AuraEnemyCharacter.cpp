@@ -53,7 +53,7 @@ void AAuraEnemyCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		// 初始化初始能力
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	// 将自己设置为 UI 的控制器
@@ -141,6 +141,16 @@ void AAuraEnemyCharacter::UnHightlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AAuraEnemyCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemyCharacter::GetCombatTarget_Implementation()
+{
+	return CombatTarget;
 }
 
 int32 AAuraEnemyCharacter::GetPlayerLevel()

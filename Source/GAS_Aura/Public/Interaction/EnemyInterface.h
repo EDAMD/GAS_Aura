@@ -24,4 +24,10 @@ class GAS_AURA_API IEnemyInterface
 public:
 	virtual void HightlightActor() = 0;
 	virtual void UnHightlightActor() = 0;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget();
 };
