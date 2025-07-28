@@ -15,8 +15,5 @@ UCLASS()
 class GAS_AURA_API UAuraMeleeAttack : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UAnimMontage> AttackMontage;
+
 };

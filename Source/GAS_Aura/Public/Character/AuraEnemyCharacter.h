@@ -35,6 +35,7 @@ public:
 	/* Combat Interface*/
 	virtual int32 GetPlayerLevel()override;
 	virtual void Die() override;
+	virtual TArray<FTagedMontage> GetAttackMontages_Implementation() override;
 	/* End Combat Interface*/
 
 	UPROPERTY(BlueprintReadOnly)
@@ -58,7 +59,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	bool bHitReaction = false;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float BaseWalkSpeed = 250.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
@@ -66,6 +67,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FTagedMontage> AttackMontages;
+
 protected:
 	virtual void BeginPlay()override;
 

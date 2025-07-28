@@ -34,8 +34,6 @@ AAuraEnemyCharacter::AAuraEnemyCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	
 
-
-
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(RootComponent);
@@ -108,7 +106,10 @@ void AAuraEnemyCharacter::HitReactTagChanged(FGameplayTag CallbackTag, int32 New
 {
 	bHitReaction = NewCount > 0 ? true : false;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReaction ? 0.f : BaseWalkSpeed;
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReaction);
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReaction);
+	}	
 }
 
 
@@ -163,5 +164,10 @@ void AAuraEnemyCharacter::Die()
 	SetLifeSpan(LifeSpan);
 
 	Super::Die();
+}
+
+TArray<FTagedMontage> AAuraEnemyCharacter::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
 }
 
