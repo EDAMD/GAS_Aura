@@ -27,7 +27,8 @@ public:
 	// Declare the pure virtual function to fix the error
 	virtual int32 GetPlayerLevel();
 
-	virtual FVector GetCombatSocketLocation();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetCombatSocketLocation();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& Target);
