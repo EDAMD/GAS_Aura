@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AuraDamageGameplayAbility.generated.h"
 
+struct FTagedMontage;
 /**
  * 
  */
@@ -24,5 +25,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
+
+	UFUNCTION(BlueprintPure)
+	FTagedMontage GetRandomTaggedMontageFromArray(const TArray<FTagedMontage>& TaggedMontages) const;
 	
 };

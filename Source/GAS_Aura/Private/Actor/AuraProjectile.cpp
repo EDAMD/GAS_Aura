@@ -11,6 +11,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "GAS_Aura/GAS_Aura.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -66,6 +67,12 @@ void AAuraProjectile::Destroyed()
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	const bool IsNotFriend = UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, GetOwner());
+	if (!IsNotFriend)
+	{
+		return;
+	}
+
 	if (DamageEffectSpecHandle.Data.IsValid() && DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
 	{
 		return;
