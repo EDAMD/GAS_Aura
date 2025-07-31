@@ -19,7 +19,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 }
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
 {
 	// 判断是否在服务器, 只在服务器生成
 	const bool bIsServet = GetAvatarActorFromActorInfo()->HasAuthority();
@@ -29,7 +29,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	}
 
 	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), 
-		FAuraGameplayTags::Get().CombatSocket_Weapon
+		SocketTag
 		);
 	// TODO: Set The projectile Rotation
 	FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
