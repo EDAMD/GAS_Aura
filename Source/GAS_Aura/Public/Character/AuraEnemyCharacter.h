@@ -12,6 +12,7 @@
 class UWidgetComponent;
 class UBehaviorTree;
 class AAuraAIController;
+class UNiagaraSystem;
 /**
  * 
  */
