@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GAS_Aura/GAS_Aura.h"
 #include "AuraGameplayTags.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -31,15 +32,15 @@ void AAuraCharacterBase::BeginPlay()
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
 	const FAuraGameplayTags& GameplayTag = FAuraGameplayTags::Get();
-	if (MontageTag.MatchesTagExact(GameplayTag.Montage_Attack_Weapon) && IsValid(Weapon))
+	if (MontageTag.MatchesTagExact(GameplayTag.CombatSocket_Weapon) && IsValid(Weapon))
 	{
 		return Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
-	if (MontageTag.MatchesTagExact(GameplayTag.Montage_Attack_LeftHand))
+	if (MontageTag.MatchesTagExact(GameplayTag.CombatSocket_LeftHand))
 	{
 		return GetMesh()->GetSocketLocation(LeftHandSocketName);
 	}
-	if (MontageTag.MatchesTagExact(GameplayTag.Montage_Attack_RightHand))
+	if (MontageTag.MatchesTagExact(GameplayTag.CombatSocket_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketName);
 	}
@@ -68,13 +69,10 @@ void AAuraCharacterBase::Die()
 	MulticastHandleDeath();
 }
 
-UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
-{
-	return BloodEffect;
-}
-
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -89,6 +87,28 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	Dissolve();
 	bDead = true;
 }
+
+FTagedMontage AAuraCharacterBase::GetTaggedMontageByTag_Implementation(const FGameplayTag MontageTag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Current Class: %s"), *GetClass()->GetName());
+
+	for (FTagedMontage TaggedMontage : AttackMontages)
+	{
+		if (TaggedMontage.MontageTag == MontageTag)
+		{
+			return TaggedMontage;
+		}
+	}
+
+	return FTagedMontage();
+}
+
+UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
+}
+
+
 
 
 

@@ -69,8 +69,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	TArray<FTagedMontage> AttackMontages;
+
 
 protected:
 	virtual void BeginPlay()override;

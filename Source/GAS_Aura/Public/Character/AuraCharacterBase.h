@@ -24,8 +24,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastHandleDeath();
 
 	/* Combat Interface */
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
@@ -34,7 +32,14 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	virtual FTagedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag MontageTag) override;
 	/* End Combat Interface */
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHandleDeath();
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FTagedMontage> AttackMontages;
 
 protected:
 
@@ -97,6 +102,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> BloodEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<USoundBase> DeathSound;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Abilities")
