@@ -140,6 +140,9 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 
 	GameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Summon"), FString("Summon Ability Tag"));
+
+	GameplayTags.Abilities_Fire_FireBlot = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireBlot"), FString("FireBlot Ability Tag"));
 	
 	/**
 	 * Combat Socket
