@@ -10,6 +10,7 @@
 class UAuraUserWidget;
 class UTexture2D;
 class UAbilityInfo;
+class UAuraAbilitySystemComponent;
 
 
 USTRUCT(BlueprintType)
@@ -70,6 +71,8 @@ protected:
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
+
+	void OnInitializedStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent);
 	
 };
 
