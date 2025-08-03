@@ -49,7 +49,7 @@ void UWaitCooldwonChange::CooldownTagChanged(const FGameplayTag InCooldownTag, i
 {
 	if (NewCount == 0)
 	{
-		CooldownStart.Broadcast(0.f);
+		CooldownEnd.Broadcast(0.f);
 	}
 }
 
@@ -63,8 +63,10 @@ void UWaitCooldwonChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC
 
 	if (AssetTags.HasTagExact(CooldownTag) || GrantedTags.HasTagExact(CooldownTag))
 	{
+		// 创建查询条件 (含有 CooldownTag 的 GE)
 		FGameplayEffectQuery GameplayEffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
 
+		// 使用上文创建的 查询条件 进行 查询 并返回值
 		TArray<float> TimesRemaining = ASC->GetActiveEffectsTimeRemaining(GameplayEffectQuery);
 		if (TimesRemaining.Num() > 0)
 		{
@@ -77,7 +79,7 @@ void UWaitCooldwonChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC
 				}
 			}
 
-			CooldownEnd.Broadcast(TimeRemaining);
+			CooldownStart.Broadcast(TimeRemaining);
 		}
 	}
 }
