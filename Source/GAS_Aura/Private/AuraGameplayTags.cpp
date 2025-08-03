@@ -133,7 +133,7 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 		FName("Effects.HitReact"), FString("Tag granted when hit Reaction"));
 
 	/**
-	 * Abilities
+	 * Abilities Tag
 	 */
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"), FString("Attack Ability Tag"));
@@ -143,6 +143,12 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 
 	GameplayTags.Abilities_Fire_FireBlot = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.FireBlot"), FString("FireBlot Ability Tag"));
+
+	/**
+	 * Cooldown Tag
+	 */
+	GameplayTags.Cooldown_Fire_FireBlot = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.FireBlot"), FString("FireBlot Cooldown Tag"));
 	
 	/**
 	 * Combat Socket
