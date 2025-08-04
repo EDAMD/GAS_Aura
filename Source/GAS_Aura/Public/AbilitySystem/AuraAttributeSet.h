@@ -263,4 +263,6 @@ private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)const;
 
 	void ShowFloatText(FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;
+
+	void SendXPEvent(const FEffectProperties& Props);
 };

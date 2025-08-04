@@ -160,6 +160,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombactInterface->Die();
 				}
+
+				SendXPEvent(Props);
 			}
 			else
 			{
@@ -201,6 +203,22 @@ void UAuraAttributeSet::ShowFloatText(FEffectProperties& Props, float Damage, bo
 
 }
 
+
+void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const ECharacterClass CharacterClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, CharacterClass, TargetLevel);
+
+		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+		FGameplayEventData Playload;
+		Playload.EventTag = GameplayTags.Attributes_Meta_IncomingXP;
+		Playload.EventMagnitude = XPReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Playload);
+	}
+}
 
 ////////////////////////////////////////////////////////// Vital Attributes ///////////////////////////////////////////////////////////////
 
