@@ -15,6 +15,8 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
+
+	CharacterClass = ECharacterClass::Elementalist;
 	
 	// 游戏开始时, 角色会自动被吸附在指定平面
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;

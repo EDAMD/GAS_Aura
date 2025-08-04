@@ -153,13 +153,17 @@ public:
 
 
 	/*
-	* Damage Meta Attribuet
+	* Meta Attribuet
 	*/
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributee")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributee")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP);
 	
+
 	/*
 	 * Damage Resistance Attribute 
 	*/
