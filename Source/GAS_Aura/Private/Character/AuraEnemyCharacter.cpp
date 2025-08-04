@@ -154,7 +154,7 @@ AActor* AAuraEnemyCharacter::GetCombatTarget_Implementation()
 	return CombatTarget;
 }
 
-int32 AAuraEnemyCharacter::GetPlayerLevel()
+int32 AAuraEnemyCharacter::GetPlayerLevel_Implementation()
 {
 	return Level;
 }

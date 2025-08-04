@@ -87,9 +87,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	AActor* TargetAvatar = SourceASC ? TargetASC->GetAvatarActor() : nullptr;
-	
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+
+	int32 SourcePlayerLevel = 1;
+	if (SourceAvatar->Implements<UCombatInterface>())
+	{
+		SourcePlayerLevel = ICombatInterface::Execute_GetPlayerLevel(SourceAvatar);
+	}
+
+	int32 TargetPlayerLevel = 1;
+	if (TargetAvatar->Implements<UCombatInterface>())
+	{
+		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
+	}
 
 	const FGameplayEffectSpec Spec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
@@ -146,11 +155,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// Get Source ArmorPenetrationCofficient by level
 	FRealCurve* ArmorPenetrationCurve = CharacterClassInfo->DamageCalculationCofficients->FindCurve(FName("ArmorPenetration"), FString());
-	const float ArmorPenetrationCofficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	const float ArmorPenetrationCofficient = ArmorPenetrationCurve->Eval(SourcePlayerLevel);
 
 	// Get Target EffectiveArmorCofficient by level
 	FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCofficients->FindCurve(FName("EffectiveArmor"), FString());
-	const float EffectiveArmorCofficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	const float EffectiveArmorCofficient = EffectiveArmorCurve->Eval(TargetPlayerLevel);
 
 	
 	
@@ -186,7 +195,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 计算 Critical Hit 相关属性
 	FRealCurve* CriticalHitResistanceCurve = CharacterClassInfo->DamageCalculationCofficients->FindCurve(FName("CriticalHitResistance"), FString());
-	const float CriticalHitResistanceCofficient = CriticalHitResistanceCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	const float CriticalHitResistanceCofficient = CriticalHitResistanceCurve->Eval(TargetPlayerLevel);
 	
 	// Critical Hit Resistance reduce Critical Hit Chance by a certain percentage 
 	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCofficient;

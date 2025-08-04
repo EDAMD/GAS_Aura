@@ -33,7 +33,7 @@ public:
 	/* End Enemy Interface */
 
 	/* Combat Interface*/
-	virtual int32 GetPlayerLevel()override;
+	virtual int32 GetPlayerLevel_Implementation()override;
 	virtual void Die() override;
 	virtual TArray<FTagedMontage> GetAttackMontages_Implementation() override;
 	/* End Combat Interface*/
