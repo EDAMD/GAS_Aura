@@ -10,8 +10,6 @@
 
 void UAttributeMenuWidgetController::BoradcastInitialValues()
 {
-	UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
-
 	check(AttributeInfo);
 
 	/*FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(FAuraGameplayTags::Get().Attributes_Primary_Strength);
@@ -19,20 +17,17 @@ void UAttributeMenuWidgetController::BoradcastInitialValues()
 	AttributeInfoDelegate.Broadcast(Info);*/
 
 	// 创建 AttributeMenu 后 在BP中调用 --- 初始化属性面板初始值
-	for (auto& Pair : AS->TagsToAttributes)
+	for (auto& Pair : GetAuraAS()->TagsToAttributes)
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
 
-	AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerState);
-	AttributePointsDelegate.Broadcast(AuraPlayerState->GetAttributePoints());
+	AttributePointsDelegate.Broadcast(GetAuraPS()->GetAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
-	UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
-
-	for (auto& Pair : AS->TagsToAttributes)
+	for (auto& Pair : GetAuraAS()->TagsToAttributes)
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
 			[this, Pair](const FOnAttributeChangeData& Data)
@@ -42,7 +37,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 		);
 	}
 
-	Cast<AAuraPlayerState>(PlayerState)->OnAttributePointsChangedDelegate.AddLambda(
+	GetAuraPS()->OnAttributePointsChangedDelegate.AddLambda(
 		[this](int32 NewValue)
 		{
 			AttributePointsDelegate.Broadcast(NewValue);
