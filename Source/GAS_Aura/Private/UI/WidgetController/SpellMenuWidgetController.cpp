@@ -16,10 +16,11 @@ void USpellMenuWidgetController::BoradcastInitialValues()
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
-
+	// 当技能变化时, 同时更改 按钮 以及 Spell Globe 的状态
 	GetAuraASC()->AbilityStatusChanged.AddLambda(
-		[this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+		[this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 NewLevel)
 		{
+			// 更改 SpendPoints 和 Equip Button 的 状态
 			if (SelectedAbility.Ability.MatchesTagExact(AbilityTag))
 			{
 				SelectedAbility.Status = StatusTag;
@@ -31,6 +32,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 				SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquipped);
 			}
 
+			// 更改技能 Icon 和 Background
 			if (AbilityInfo)
 			{
 				FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
@@ -84,6 +86,14 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	ShouldEnableButtons(AbilityStatus, SpellPoints, bEnableSpendPoints, bEnableEquipped);
 
 	SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquipped);
+}
+
+void USpellMenuWidgetController::SpendPointsButtonPressed()
+{
+	if (GetAuraASC())
+	{
+		GetAuraASC()->ServerSpendSpellPoints(SelectedAbility.Ability);
+	}	
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& StatusTag, int32 SpellPoints, bool& bShouldSpendPointsButtonEnabled, bool& bShouldEquippedButtonEnabled)
