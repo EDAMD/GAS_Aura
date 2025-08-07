@@ -5,7 +5,6 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Player/AuraPlayerState.h"
-#include "GameplayTagContainer.h"
 #include "AuraGameplayTags.h"
 
 void USpellMenuWidgetController::BoradcastInitialValues()
@@ -21,10 +20,24 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	GetAuraASC()->AbilityStatusChanged.AddLambda(
 		[this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
 		{
-			FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
-			Info.StatusTag = StatusTag;
+			if (SelectedAbility.Ability.MatchesTagExact(AbilityTag))
+			{
+				SelectedAbility.Status = StatusTag;
 
-			AbilityInfoDelegate.Broadcast(Info);
+				bool bEnableSpendPoints = false;
+				bool bEnableEquipped = false;
+				ShouldEnableButtons(StatusTag, CurrentSpellPoints, bEnableSpendPoints, bEnableEquipped);
+
+				SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquipped);
+			}
+
+			if (AbilityInfo)
+			{
+				FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+				Info.StatusTag = StatusTag;
+
+				AbilityInfoDelegate.Broadcast(Info);
+			}
 		}
 	);
 
@@ -32,6 +45,13 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		[this](int32 NewValue)
 		{
 			SpellPointsDelegate.Broadcast(NewValue);
+			CurrentSpellPoints = NewValue;
+
+			bool bEnableSpendPoints = false;
+			bool bEnableEquipped = false;
+			ShouldEnableButtons(SelectedAbility.Status, CurrentSpellPoints, bEnableSpendPoints, bEnableEquipped);
+
+			SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquipped);
 		}
 	);
 }
@@ -56,6 +76,9 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 		AbilityStatus = GetAuraASC()->GetStatusFromSpec(*AbilitySpec);
 	}
 	
+	SelectedAbility.Ability = AbilityTag;
+	SelectedAbility.Status = AbilityStatus;
+
 	bool bEnableSpendPoints = false;
 	bool bEnableEquipped = false;
 	ShouldEnableButtons(AbilityStatus, SpellPoints, bEnableSpendPoints, bEnableEquipped);
