@@ -15,6 +15,9 @@ class GAS_AURA_API USpellMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(BlueprintAssignable, Category = "GAS|PlayerState")
+	FOnPlayerStateChangedSignature SpellPointsDelegate;
+
 	virtual void BoradcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 };
