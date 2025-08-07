@@ -64,6 +64,7 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	const int32 SpellPoints = GetAuraPS()->GetSpellPoints();
 	FGameplayTag AbilityStatus;
 
+	// 判断当前选中能力 是否有效
 	const bool bTagValid = AbilityTag.IsValid();
 	const bool bTagNone = AbilityTag.MatchesTagExact(GameplayTags.Abilities_None);
 	FGameplayAbilitySpec* AbilitySpec = GetAuraASC()->GetSepcFromAbilityTag(AbilityTag);
@@ -78,6 +79,7 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 		AbilityStatus = GetAuraASC()->GetStatusFromSpec(*AbilitySpec);
 	}
 	
+	// 设置当前选中 Ability
 	SelectedAbility.Ability = AbilityTag;
 	SelectedAbility.Status = AbilityStatus;
 
