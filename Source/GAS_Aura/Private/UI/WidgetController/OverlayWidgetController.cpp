@@ -7,6 +7,8 @@
 #include "Runtime/GameplayTags/Classes/GameplayTagContainer.h"
 #include "Player/AuraPlayerState.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
+#include "AuraGameplayTags.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UOverlayWidgetController::BoradcastInitialValues()
 {
@@ -74,6 +76,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 	if (GetAuraASC())
 	{
+		GetAuraASC()->AbilityEquipped.AddUObject(
+			this,
+			&UOverlayWidgetController::OnAbilityEquipped
+		);
+
 		if (GetAuraASC()->bStartupAbilitiesGiven)
 		{
 			BroadcastAbilityInfo();
@@ -129,4 +136,25 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 	}
 
+}
+
+void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot) const
+{
+	// 清除旧的 Slot
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = PrevSlot;
+	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+
+	// 广播一个空的 AbilityInfo 如果 PrevSlot 有效, 仅当装备一个已经装备的技能
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	// 填充新的 Slot
+
+	// 广播当前的 AbilityInfo 
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = StatusTag;
+	Info.InputTag = SlotTag;
+	AbilityInfoDelegate.Broadcast(Info);
 }

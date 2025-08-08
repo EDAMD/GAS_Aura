@@ -62,7 +62,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	);
 
 	// 绑定 AuraASC 通知 Widget Controller Ability Equipped
-	GetAuraASC()->AbilityEquipped.AddUObject(this, &USpellMenuWidgetController::AbilityEquipped);
+	GetAuraASC()->AbilityEquipped.AddUObject(this, &USpellMenuWidgetController::OnAbilityEquipped);
 }
 
 void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
@@ -162,7 +162,7 @@ void USpellMenuWidgetController::SpellRowGlobePressed(const FGameplayTag& SlotTa
 	GetAuraASC()->ServerEquipAbility(SelectedAbility.Ability, SlotTag);
 }
 
-void USpellMenuWidgetController::AbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot)
+void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot)
 {
 	bWaitingForEquipSelection = false;
 	
@@ -186,6 +186,8 @@ void USpellMenuWidgetController::AbilityEquipped(const FGameplayTag& AbilityTag,
 
 	// 停止 选择动画
 	StopWaitForEquipDelegate.Broadcast(AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType);
+	SpellGlobeReassignedDelegate.Broadcast(AbilityTag);
+	GlobeDeselect();
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& StatusTag, int32 SpellPoints, bool& bShouldSpendPointsButtonEnabled, bool& bShouldEquippedButtonEnabled)

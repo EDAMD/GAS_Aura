@@ -10,6 +10,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature, bool, bSpendPointsButtonEnabled, bool, bEquippedButtonEnabled, FString, Description, FString, NextLevelDescription);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellGlobeReassignedSignature, const FGameplayTag&, AbilityTag);
 
 struct FGameplayTag;
 
@@ -40,6 +41,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWaitForEquipSelectionSignature StopWaitForEquipDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FSpellGlobeReassignedSignature SpellGlobeReassignedDelegate;
+
 	virtual void BoradcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 
@@ -58,7 +62,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType);
 
-	void AbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot);
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot);
 
 private:
 	static void ShouldEnableButtons(const FGameplayTag& StatusTag, int32 SpellPoints, bool& bShouldSpendPointsButtonEnabled, bool& bShouldEquippedButtonEnabled);
