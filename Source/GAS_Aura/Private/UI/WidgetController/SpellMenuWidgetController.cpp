@@ -60,6 +60,9 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 			SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquipped, Description, NextLevelDescription);
 		}
 	);
+
+	// 绑定 AuraASC 通知 Widget Controller Ability Equipped
+	GetAuraASC()->AbilityEquipped.AddUObject(this, &USpellMenuWidgetController::AbilityEquipped);
 }
 
 void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
@@ -135,6 +138,54 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	WaitForEquipDelegate.Broadcast(AbilityType);
 
 	bWaitingForEquipSelection = true;
+
+	const FGameplayTag SelectedStatus = GetAuraASC()->GetStatusFromAbilityTag(SelectedAbility.Ability);
+
+	// 当前被选中的技能是 Equip 状态
+	if (SelectedStatus.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
+	{
+		// 保存当前选中技能的输入标签
+		SelectedSlot = GetAuraASC()->GetInputTagFromAbilityTag(SelectedAbility.Ability);
+	}
+
+
+}
+
+void USpellMenuWidgetController::SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType)
+{
+	if (!bWaitingForEquipSelection) return;
+	// Check selected ability against the slot's type. 
+	// (don't equip an offensive spell in a passive slot and vice versa)
+	const FGameplayTag& SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.Ability).AbilityType;
+	if (!SelectedAbilityType.MatchesTagExact(AbilityType)) return;
+
+	GetAuraASC()->ServerEquipAbility(SelectedAbility.Ability, SlotTag);
+}
+
+void USpellMenuWidgetController::AbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PrevSlot)
+{
+	bWaitingForEquipSelection = false;
+	
+	// 清除旧的 Slot
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = PrevSlot;
+	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+
+	// 广播一个空的 AbilityInfo 如果 PrevSlot 有效, 仅当装备一个已经装备的技能
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	// 填充新的 Slot
+	
+	// 广播当前的 AbilityInfo 
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = StatusTag;
+	Info.InputTag = SlotTag;
+	AbilityInfoDelegate.Broadcast(Info);
+
+	// 停止 选择动画
+	StopWaitForEquipDelegate.Broadcast(AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType);
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& StatusTag, int32 SpellPoints, bool& bShouldSpendPointsButtonEnabled, bool& bShouldEquippedButtonEnabled)
