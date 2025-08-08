@@ -36,7 +36,7 @@ public:
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
-	FGameplayAbilitySpec* GetSepcFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
 
@@ -47,6 +47,8 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSpendSpellPoints(const FGameplayTag& AbilityTag);
+
+	bool GetDescriptionByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
 
 protected:
 
