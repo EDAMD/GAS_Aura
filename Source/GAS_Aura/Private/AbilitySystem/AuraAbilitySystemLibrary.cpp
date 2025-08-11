@@ -247,7 +247,7 @@ void UAuraAbilitySystemLibrary::SetDebuffFrequency(FGameplayEffectContextHandle&
 	}
 }
 
-void UAuraAbilitySystemLibrary::SetDebuffDruation(FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDruation)
+void UAuraAbilitySystemLibrary::SetDebuffDuration(FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDruation)
 {
 	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
@@ -255,13 +255,14 @@ void UAuraAbilitySystemLibrary::SetDebuffDruation(FGameplayEffectContextHandle& 
 	}
 }
 
-//void UAuraAbilitySystemLibrary::SetDebuffDamageType(FGameplayEffectContextHandle& EffectContextHandle, FGameplayTag InDebuffDamageType)
-//{
-//	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
-//	{
-//		AuraEffectContext->SetDamageType(InDebuffDamageType);
-//	}
-//}
+void UAuraAbilitySystemLibrary::SetDebuffDamageType(FGameplayEffectContextHandle& EffectContextHandle, FGameplayTag& InDebuffDamageType)
+{
+	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		const TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(InDebuffDamageType);
+		AuraEffectContext->SetDamageType(DamageType);
+	}
+}
 
 void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject, 
 	TArray<AActor*>& OutOverlappingActors, 

@@ -87,10 +87,10 @@ public:
 	static void SetDebuffFrequency(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InDebuffFrequency);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
-	static void SetDebuffDruation(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDruation);
+	static void SetDebuffDuration(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InDebuffDruation);
 
-	//UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
-	//static void SetDebuffDamageType(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, TSharedPtr<FGameplayTag> InDebuffDamageType);
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetDebuffDamageType(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, FGameplayTag& InDebuffDamageType);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanics")
 	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereLocation);
