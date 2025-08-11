@@ -32,7 +32,7 @@ public:
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector DeathImpulse) override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	virtual FTagedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag MontageTag) override;
 	virtual int32 GetMinionCount_Implementation()override;
@@ -47,7 +47,7 @@ public:
 	/* End Combat Interface */
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastHandleDeath();
+	void MulticastHandleDeath(const FVector DeathImpulse);
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTagedMontage> AttackMontages;

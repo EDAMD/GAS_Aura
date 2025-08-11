@@ -173,12 +173,11 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		const bool bFatal = NewHealth <= 0.f;
 		if (bFatal)
 		{
-			// TODO: Use Death Impulse
 
 			ICombatInterface* CombactInterface = Cast<ICombatInterface>(Props.TargetAvatorActor);
 			if (CombactInterface)
 			{
-				CombactInterface->Die();
+				CombactInterface->Die(UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle));
 			}
 
 			SendXPEvent(Props);
