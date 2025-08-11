@@ -123,6 +123,22 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 	GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Resistance.Physical"), FString("Physical Damage Resistance Type"));
 
+	/*
+	 * Debuffs
+	*/
+
+	GameplayTags.Debuff_Brun = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Brun"), FString("Debuff For Fire Damage"));
+
+	GameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Stun"), FString("Debuff For Lightning Damage"));
+
+	GameplayTags.Debuff_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Arcane"), FString("Debuff For Arcane Damage"));
+
+	GameplayTags.Debuff_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Physical"), FString("Debuff For Physical Damage"));
+
 
 	/*
 	 * Meta Attributes
@@ -131,12 +147,20 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 		FName("Attributes.Meta.IncomingXP"), FString("Incoming XP Meta Attribute"));
 
 	/*
-	 * Map of Damage Type To Resisteance 
+	 * Map of Damage Type To Resisteance
 	*/
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Lightning, GameplayTags.Attributes_Resistance_Lightning);
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Arcane, GameplayTags.Attributes_Resistance_Arcane);
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Physical, GameplayTags.Attributes_Resistance_Physical);
+
+	/*
+	 * Map of Damage Type To Debuff
+	*/
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Fire, GameplayTags.Debuff_Brun);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Lightning, GameplayTags.Debuff_Stun);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Arcane, GameplayTags.Debuff_Arcane);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Physical, GameplayTags.Debuff_Physical);
 
 
 	/**
@@ -194,7 +218,7 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 	 */
 	GameplayTags.Cooldown_Fire_FireBlot = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Fire.FireBlot"), FString("FireBlot Cooldown Tag"));
-	
+
 	/**
 	 * Combat Socket
 	 */

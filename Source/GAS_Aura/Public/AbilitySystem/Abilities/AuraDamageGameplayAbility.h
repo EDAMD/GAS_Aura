@@ -21,14 +21,15 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
-	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+	FGameplayTag DamageType;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	FScalableFloat Damage;
 
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
 
 	UFUNCTION(BlueprintPure)
 	FTagedMontage GetRandomTaggedMontageFromArray(const TArray<FTagedMontage>& TaggedMontages) const;
-
-	float GetDamageByDamageType(float InLevel, const FGameplayTag& DamageType);
 	
 };
