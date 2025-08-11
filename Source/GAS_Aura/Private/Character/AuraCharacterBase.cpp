@@ -6,11 +6,16 @@
 #include "GAS_Aura/GAS_Aura.h"
 #include "AuraGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");
+	BurnDebuffComponent->SetupAttachment(GetRootComponent());
+	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Brun;
 
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
@@ -88,6 +93,16 @@ ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
+FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegistered;
+}
+
+FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
+}
+
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
@@ -105,6 +120,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	Dissolve();
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 FTagedMontage AAuraCharacterBase::GetTaggedMontageByTag_Implementation(const FGameplayTag MontageTag)

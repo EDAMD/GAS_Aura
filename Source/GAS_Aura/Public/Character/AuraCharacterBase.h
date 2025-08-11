@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
 class UAnimMontage;
+class UDebuffNiagaraComponent;
 
 UCLASS(Abstract)
 class GAS_AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -37,6 +38,12 @@ public:
 	virtual int32 GetMinionCount_Implementation()override;
 	virtual void IncrementMinionCount_Implementation(int32 Amount)override;
 	virtual ECharacterClass GetCharacterClass_Implementation()override;
+
+	FOnASCRegistered OnASCRegistered;
+	FOnDeath OnDeath;
+
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnDeath GetOnDeathDelegate();
 	/* End Combat Interface */
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -119,6 +126,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Default Class")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Abilities")

@@ -14,6 +14,7 @@
 #include "GAS_Aura/AuraLogChannels.h"
 #include "Interaction/PlayerInterface.h"
 #include "AuraAbilityTypes.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -218,8 +219,12 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	Effect->Period = DebuffFrequency;
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuff[DamageType]);
-	
+	// ÆúÓÃ: Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuff[DamageType]); 
+	FInheritedTagContainer TagContainer = FInheritedTagContainer();
+	UTargetTagsGameplayEffectComponent& Component = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+	TagContainer.Added.AddTag(GameplayTags.DamageTypesToDebuff[DamageType]);
+	Component.SetAndApplyTargetTagChanges(TagContainer);
+
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;
 

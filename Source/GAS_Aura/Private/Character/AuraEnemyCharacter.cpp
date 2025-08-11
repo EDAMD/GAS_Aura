@@ -123,6 +123,7 @@ void AAuraEnemyCharacter::InitAbilityActorInfo()
 		InitializedDefaultAttributes();
 	}
 
+	OnASCRegistered.Broadcast(AbilitySystemComponent);
 }
 
 void AAuraEnemyCharacter::InitializedDefaultAttributes()
