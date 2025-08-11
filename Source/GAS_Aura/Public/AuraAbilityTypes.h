@@ -61,7 +61,7 @@ public:
 	bool IsSuccessfulDebuff() const { return bIsSuccessfulDebuff; }
 	float GetDebuffDamage() const { return DebuffDamage; }
 	float GetDebuffFrequency() const { return DebuffFrequency; }
-	float GetDebuffDuration() const { return DebuffFrequency; }
+	float GetDebuffDuration() const { return DebuffDuration; }
 	TSharedPtr<FGameplayTag> GetDebuffDamageType() const { return DamageType; }
 
 	void SetIsBlockHit(bool bInIsBlockHit) { bIsBlockHit = bInIsBlockHit; }

@@ -79,8 +79,8 @@ void UExecCalc_Damage::DetermineDebuff(
 	for (TTuple<FGameplayTag, FGameplayTag> Pair : GameplayTags.DamageTypesToDebuff)
 	{
 		// eg: Damage.Fire  ----   Debuff.Burn
-		const FGameplayTag DamageType = Pair.Key;
-		const FGameplayTag DebuffType = Pair.Value;
+		const FGameplayTag& DamageType = Pair.Key;
+		const FGameplayTag& DebuffType = Pair.Value;
 		const float TypeDamage = Spec.GetSetByCallerMagnitude(DamageType, false, -1.f);
 		if (TypeDamage > -0.5f) // .5 padding for float point [im]precision
 		{
@@ -98,7 +98,9 @@ void UExecCalc_Damage::DetermineDebuff(
 			if (bDebuff)
 			{
 				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();
+
 				UAuraAbilitySystemLibrary::SetIsSuccessfulDebuff(ContextHandle, true);
+				UAuraAbilitySystemLibrary::SetDebuffDamageType(ContextHandle, DamageType);
 
 				const float DebuffDamage = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Damage, false, -1.f);
 				const float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency, false, -1.f);
