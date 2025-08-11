@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "AuraAbilityTypes.h"
 #include "AuraDamageGameplayAbility.generated.h"
 
 struct FTagedMontage;
@@ -14,6 +15,13 @@ UCLASS()
 class GAS_AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable)
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
 
 protected:
 
@@ -38,8 +46,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DebuffDuration = 5.f;
 
-	UFUNCTION(BlueprintCallable)
-	void CauseDamage(AActor* TargetActor);
 
 	UFUNCTION(BlueprintPure)
 	FTagedMontage GetRandomTaggedMontageFromArray(const TArray<FTagedMontage>& TaggedMontages) const;
