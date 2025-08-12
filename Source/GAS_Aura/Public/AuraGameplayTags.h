@@ -67,6 +67,9 @@ public:
 	FGameplayTag Debuff_Frequency;
 	FGameplayTag Debuff_Duration;
 
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuff;
+
 	FGameplayTag Effects_HitReact;
 
 	FGameplayTag Abilities_None;
@@ -99,8 +102,10 @@ public:
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
 
-	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
-	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuff;
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_InputReleased;
+	FGameplayTag Player_Block_CursorTrace;
 
 protected:
 private:
