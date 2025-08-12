@@ -49,16 +49,6 @@ void AAuraProjectile::BeginPlay()
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 }
 
-void AAuraProjectile::Destroyed()
-{
-	if (!bHit && !HasAuthority()) // 如果 服务器在 客户端 碰撞前先销毁角色, 则在此播放特效后销毁
-	{
-		OnHit();
-	}
-
-	Super::Destroyed();
-}
-
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -105,6 +95,22 @@ void AAuraProjectile::OnHit()
 	if (LoopingSoundComponent)
 	{
 		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
 	}
 	bHit = true;
+}
+
+void AAuraProjectile::Destroyed()
+{
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+	if (!bHit && !HasAuthority()) // 如果 服务器在 客户端 碰撞前先销毁角色, 则在此播放特效后销毁
+	{
+		OnHit();
+	}
+
+	Super::Destroyed();
 }

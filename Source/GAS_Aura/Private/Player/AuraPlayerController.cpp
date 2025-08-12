@@ -14,6 +14,7 @@
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -203,6 +204,10 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		// 还不能确定是否是短按,因此不能确定是否自动移动
 		bAutoRunning = false;
 	}
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagPressed(InputTag);
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -241,6 +246,9 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					bAutoRunning = true;
 				}
 			}
+
+			// 激活 Niagara
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 		}
 		FollowTime = 0.f;
 		bTargeting = false;
