@@ -49,6 +49,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	
 	Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
 
+
 	Projectile->FinishSpawning(SpawnTransform);
 	
 	/*// TODO: Give the projectile a Gameplay Effect Spec for causing damage

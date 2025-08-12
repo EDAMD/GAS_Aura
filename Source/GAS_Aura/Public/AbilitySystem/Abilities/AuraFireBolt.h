@@ -28,4 +28,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 MaxNumProjectiles = 5;
+
+	UPROPERTY(EditDefaultsOnly)
+	float HomingAccerlerationMin = 1600.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float HomingAccerlerationMax = 3200.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool bLaunchHomingProjectiles = true;
+	
 };
