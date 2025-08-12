@@ -122,23 +122,23 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	{
 		Ar << bIsCriticalHit;
 	}
-	if (RepBits && (1 << 9))
+	if (RepBits & (1 << 9))
 	{
 		Ar << bIsSuccessfulDebuff;
 	}
-	if (RepBits && (1 << 10))
+	if (RepBits & (1 << 10))
 	{
 		Ar << DebuffDamage;
 	}
-	if (RepBits && (1 << 11))
+	if (RepBits & (1 << 11))
 	{
 		Ar << DebuffFrequency;
 	}
-	if (RepBits && (1 << 12))
+	if (RepBits & (1 << 12))
 	{
 		Ar << DebuffDuration;
 	}
-	if (RepBits && (1 << 13))
+	if (RepBits & (1 << 13))
 	{
 		if (Ar.IsLoading())
 		{
@@ -149,11 +149,11 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 		}
 		DamageType->NetSerialize(Ar, Map, bOutSuccess);
 	}
-	if (RepBits && (1 << 14))
+	if (RepBits & (1 << 14))
 	{
 		DeathImpluse.NetSerialize(Ar, Map, bOutSuccess);
 	}
-	if (RepBits && (1 << 15))
+	if (RepBits & (1 << 15))
 	{
 		KnockbackForce.NetSerialize(Ar, Map, bOutSuccess);
 	}
