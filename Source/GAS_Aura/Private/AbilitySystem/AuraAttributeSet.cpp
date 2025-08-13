@@ -184,9 +184,14 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		}
 		else
 		{
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			if (!Props.TargetAvatorActor->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeingShocked(Props.TargetAvatorActor))
+			{
+				// 不在 Stun 状态才能播放HitReaction
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
+
 
 			// Launch Character
 			const FVector KnockbackForce = UAuraAbilitySystemLibrary::GetKnockbackForce(Props.EffectContextHandle);
@@ -262,7 +267,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
 	}
 
-	
+
 }
 
 void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
@@ -336,7 +341,7 @@ void UAuraAttributeSet::ShowFloatText(const FEffectProperties& Props, float Dama
 		{
 			PC->ShowDamage(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
-		
+
 	}
 
 
@@ -364,7 +369,7 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
 	// 通知 AbilitySystem 属性从服务器下载, OldHealth作为回滚值记录, 当数值不合法时, 服务器通知回滚
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth);	
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth);
 }
 
 void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
@@ -373,7 +378,7 @@ void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 }
 
 ////////////////////////////////////////////////////////// Primary Attributes ///////////////////////////////////////////////////////////////
- 
+
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Strength, OldStrength);
