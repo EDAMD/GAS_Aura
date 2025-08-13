@@ -40,11 +40,13 @@ public:
 	virtual ECharacterClass GetCharacterClass_Implementation()override;
 
 	FOnASCRegistered OnASCRegistered;
-	FOnDeath OnDeath;
+	//FOnDeath OnDeath;
+	FOnDeathSignature OnDeathDelegate;
 
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
-	virtual FOnDeath GetOnDeathDelegate();
+	//virtual FOnDeath GetOnDeathDelegate();
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
+	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	/* End Combat Interface */
 
 	UFUNCTION(NetMulticast, Reliable)

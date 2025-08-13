@@ -97,7 +97,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector Death
 
 	Dissolve();
 	bDead = true;
-	OnDeath.Broadcast(this);
+	// OnDeath.Broadcast(this);
+	OnDeathDelegate.Broadcast(this);
 }
 
 int32 AAuraCharacterBase::GetMinionCount_Implementation()
@@ -120,9 +121,14 @@ FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
 	return OnASCRegistered;
 }
 
-FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+//FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+//{
+//	return OnDeath;
+//}
+
+FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 {
-	return OnDeath;
+	return OnDeathDelegate;
 }
 
 USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation()
