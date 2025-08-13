@@ -19,6 +19,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	BurnDebuffComponent->SetupAttachment(GetRootComponent());
 	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Brun;
 
+	StunDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");
+	StunDebuffComponent->SetupAttachment(GetRootComponent());
+	StunDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Stun;
+
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
@@ -35,6 +39,7 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBurned);
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -106,7 +111,10 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector Death
 
 	Dissolve();
 	bDead = true;
-	// OnDeath.Broadcast(this);
+
+	BurnDebuffComponent->Deactivate();
+	StunDebuffComponent->Deactivate();
+
 	OnDeathDelegate.Broadcast(this);
 }
 
@@ -115,11 +123,15 @@ void AAuraCharacterBase::OnRep_Stunned()
 
 }
 
+void AAuraCharacterBase::OnRep_Burned()
+{
+
+}
+
 void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bIsStunned = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
-
 }
 
 int32 AAuraCharacterBase::GetMinionCount_Implementation()
@@ -137,7 +149,7 @@ ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
-FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+FOnASCRegistered& AAuraCharacterBase::GetOnASCRegisteredDelegate()
 {
 	return OnASCRegistered;
 }
