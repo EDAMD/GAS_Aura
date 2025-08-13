@@ -323,6 +323,57 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+{
+	if (Actors.Num() < MaxTargets)
+	{
+		OutClosestTargets = Actors;
+		return;
+	}
+
+	/*TMultiMap<float, AActor*> Map;
+	for (AActor* Actor : Actors)
+	{
+		float Distance = (Actor->GetActorLocation() - Origin).Length();
+		Map.Add(Distance, Actor);
+	}
+	OutClosestTargets.Empty();
+	for (TTuple<float, AActor*> Pair : Map)
+	{
+		if (OutClosestTargets.Num() < MaxTargets)
+		{
+			OutClosestTargets.Add(Pair.Value);
+		}
+		else
+		{
+			break;
+		}
+	}*/
+
+	TArray<AActor*> ActorsToCheck = Actors;
+	int32 NumTargetFound = 0;
+
+	while (NumTargetFound < MaxTargets)
+	{
+		if (ActorsToCheck.Num() == 0) break;
+		double ClosestDistance = TNumericLimits<double>::Max();
+		AActor* ClosestActor;
+
+		for (AActor* PotentialActor : ActorsToCheck)
+		{
+			const double Distance = (PotentialActor->GetActorLocation() - Origin).Length();
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				ClosestActor = PotentialActor;
+			}
+		}
+		ActorsToCheck.Remove(ClosestActor);
+		OutClosestTargets.AddUnique(ClosestActor);
+		++NumTargetFound;
+	}
+}
+
 bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondActor)
 {
 	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
