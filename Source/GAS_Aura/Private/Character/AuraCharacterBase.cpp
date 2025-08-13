@@ -7,6 +7,8 @@
 #include "AuraGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include"Net/UnrealNetwork.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -26,6 +28,13 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -101,6 +110,18 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector Death
 	OnDeathDelegate.Broadcast(this);
 }
 
+void AAuraCharacterBase::OnRep_Stunned()
+{
+
+}
+
+void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+
+}
+
 int32 AAuraCharacterBase::GetMinionCount_Implementation()
 {
 	return MinionCount;
@@ -155,9 +176,6 @@ UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
 {
 	return BloodEffect;
 }
-
-
-
 
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()

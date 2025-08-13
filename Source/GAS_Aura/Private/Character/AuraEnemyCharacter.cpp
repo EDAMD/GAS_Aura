@@ -9,10 +9,10 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AuraGameplayTags.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "AI/AuraAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAuraEnemyCharacter::AAuraEnemyCharacter()
 {
@@ -38,6 +38,7 @@ AAuraEnemyCharacter::AAuraEnemyCharacter()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(RootComponent);
 
+	BaseWalkSpeed = 250.f;
 }
 
 void AAuraEnemyCharacter::BeginPlay()
@@ -124,11 +125,26 @@ void AAuraEnemyCharacter::InitAbilityActorInfo()
 	}
 
 	OnASCRegistered.Broadcast(AbilitySystemComponent);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(
+		this,
+		&AAuraEnemyCharacter::StunTagChanged
+	);
 }
 
 void AAuraEnemyCharacter::InitializedDefaultAttributes()
 {
 	UAuraAbilitySystemLibrary::InitializedDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+void AAuraEnemyCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
+	}
 }
 
 void AAuraEnemyCharacter::HightlightActor()

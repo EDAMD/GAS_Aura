@@ -12,6 +12,7 @@
 #include "NiagaraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "AuraGameplayTags.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -60,6 +61,27 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init Ability Actor Info for the Client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::OnRep_Stunned()
+{
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		FGameplayTagContainer BlockedTags;
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+		BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
+		if (bIsStunned)
+		{
+			AuraASC->AddLooseGameplayTags(BlockedTags);
+		}
+		else
+		{
+			AuraASC->RemoveLooseGameplayTags(BlockedTags);
+		}
+	}
 }
 
 int32 AAuraCharacter::GetAttributePoints_Implementation() const
@@ -176,6 +198,10 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
 	OnASCRegistered.Broadcast(AbilitySystemComponent);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(
+		this,
+		&AAuraCharacter::StunTagChanged
+	);
 
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
