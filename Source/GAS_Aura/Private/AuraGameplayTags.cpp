@@ -207,10 +207,10 @@ void FAuraGameplayTags::InitializedNativeGameplayTags()
 		FName("Abilities.Passive.HaloOfProtection"), FString("Halo Of Projection"));
 
 	GameplayTags.Abilities_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Passive.HaloOfProtection"), FString("Life Siphon"));
+		FName("Abilities.Passive.LifeSiphon"), FString("Life Siphon"));
 
 	GameplayTags.Abilities_Passive_ManaSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Passive.HaloOfProtection"), FString("Mana Siphon"));
+		FName("Abilities.Passive.ManaSiphon"), FString("Mana Siphon"));
 
 
 	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
