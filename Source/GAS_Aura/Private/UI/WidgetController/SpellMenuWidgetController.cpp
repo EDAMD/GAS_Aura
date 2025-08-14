@@ -145,7 +145,7 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	if (SelectedStatus.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
 	{
 		// 保存当前选中技能的输入标签
-		SelectedSlot = GetAuraASC()->GetInputTagFromAbilityTag(SelectedAbility.Ability);
+		SelectedSlot = GetAuraASC()->GetSlotFromAbilityTag(SelectedAbility.Ability);
 	}
 
 
