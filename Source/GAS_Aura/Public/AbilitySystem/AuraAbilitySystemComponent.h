@@ -12,6 +12,7 @@ DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* AbilityTag */, const FGameplayTag& /* Status Tag*/, int32 /* Ability Level*/);
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquipped, const FGameplayTag& /* AbilityTag */, const FGameplayTag& /* StatusTag*/, const FGameplayTag& /* SlotTag*/, const FGameplayTag& /* PrevSlot*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /* AbilityTag */);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -24,6 +25,7 @@ public:
 	FEffectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGivenDelegate;
 	FAbilityStatusChanged AbilityStatusChanged;
+	FDeactivatePassiveAbility DeactivatePassiveAbility;
 
 	// 通知 Spell Menu Widget Controller Ability装备
 	FAbilityEquipped AbilityEquipped;
