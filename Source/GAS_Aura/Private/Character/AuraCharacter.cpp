@@ -17,7 +17,7 @@
 
 
 AAuraCharacter::AAuraCharacter()
-{    
+{
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->SetUsingAbsoluteRotation(true);
@@ -36,7 +36,7 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 
 	CharacterClass = ECharacterClass::Elementalist;
-	
+
 	// 游戏开始时, 角色会自动被吸附在指定平面
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
@@ -62,6 +62,22 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init Ability Actor Info for the Client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* InMaterial)
+{
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->ShowMagicCircle(InMaterial);
+	}
+}
+
+void AAuraCharacter::HideMagicCircle_Implementation()
+{
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->HideMagicCircle();
+	}
 }
 
 void AAuraCharacter::OnRep_Stunned()
@@ -92,7 +108,7 @@ void AAuraCharacter::OnRep_Burned()
 	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		if (bIsBurned)
-		{			
+		{
 			BurnDebuffComponent->Activate();
 		}
 		else
