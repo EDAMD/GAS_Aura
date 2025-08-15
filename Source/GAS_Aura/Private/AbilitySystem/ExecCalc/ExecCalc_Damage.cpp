@@ -10,6 +10,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraAbilityTypes.h"
+#include "Kismet/GameplayStatics.h"
 
 // 需要捕获的属性 结构体
 struct AuraDamageStatics
@@ -187,7 +188,43 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
 
+		// 是否有 范围伤害(Radial Damage)
+		if (UAuraAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
+		{
+			// 1. 重写 TakeDamage 在 AuraCharacterBase 中.
+			// 2. 创建代理 OnDamageDelegate, 在 TakeDamage 中广播接收到的数据
+			// 3. 在被伤害角色中绑定 Lambda
+			// 4. 调用 UGameplayStatics::ApplyRadialDamageWithFalloff 来申请伤害 (导致 TakeDamage 在目标角色中被调用
+			//	  然后 OnDamageDelegate 广播伤害)
+			// 5. 在 Lambda 中, 获取广播来的数据并 设置 DamageTypeValue 
+
+			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetAvatar))
+			{
+				CombatInterface->GetOnDamageSignature().AddLambda(
+					[&](float DamageAmount)
+					{
+						DamageTypeValue = DamageAmount;
+					}
+				);
+			}
+
+
+			UGameplayStatics::ApplyRadialDamageWithFalloff(
+				TargetAvatar,
+				DamageTypeValue,
+				0.f,
+				UAuraAbilitySystemLibrary::GetRadialDamageOrigin(EffectContextHandle),
+				UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
+				UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
+				1.f,
+				UDamageType::StaticClass(),
+				TArray<AActor*>(),
+				SourceAvatar);
+		}
+
+
 		Damage += DamageTypeValue;
+
 	}
 
 	// Capture BlockChance on Target, and determine if there was a successful Block

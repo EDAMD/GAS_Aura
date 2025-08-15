@@ -29,6 +29,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 
@@ -51,10 +52,13 @@ public:
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
+	virtual FOnDamageSignature& GetOnDamageSignature() override;
 
 	virtual bool IsBeingShocked_Implementation() const override;
 	virtual void SetIsBeingShocked_Implementation(bool bInShock) override;
 	/* End Combat Interface */
+
+	FOnDamageSignature OnDamageDelegate;
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath(const FVector DeathImpulse);

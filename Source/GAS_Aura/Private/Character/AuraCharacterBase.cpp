@@ -97,6 +97,15 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+float AAuraCharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	const float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	OnDamageDelegate.Broadcast(DamageTaken);
+
+	return DamageTaken;
+}
+
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
 {
 	return this;
@@ -183,6 +192,11 @@ FOnASCRegistered& AAuraCharacterBase::GetOnASCRegisteredDelegate()
 FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 {
 	return OnDeathDelegate;
+}
+
+FOnDamageSignature& AAuraCharacterBase::GetOnDamageSignature()
+{
+	return OnDamageDelegate;
 }
 
 bool AAuraCharacterBase::IsBeingShocked_Implementation() const
