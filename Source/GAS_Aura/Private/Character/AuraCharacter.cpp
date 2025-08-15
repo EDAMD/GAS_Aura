@@ -69,6 +69,7 @@ void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* InMateri
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		AuraPlayerController->ShowMagicCircle(InMaterial);
+		AuraPlayerController->bShowMouseCursor = false;
 	}
 }
 
@@ -77,6 +78,7 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		AuraPlayerController->HideMagicCircle();
+		AuraPlayerController->bShowMouseCursor = true;
 	}
 }
 
