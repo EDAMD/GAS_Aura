@@ -24,7 +24,7 @@ FString UAuraFireBlast::GetDescription(int32 Level)
 
 		// Commont
 		"<Default>Launches</>"
-		"Small> %d </>"
+		"<Level> %d </>"
 		"<Default>fire balls in all directions, each coming back and </>"
 		"<Default>exploding upon return, causing</>"
 
@@ -62,7 +62,7 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 
 		// Num
 		"<Default>Launches</>"
-		"Small> %d </>"
+		"<Level> %d </>"
 		"<Default>fire balls in all directions, each coming back and </>"
 		"<Default>exploding upon return, causing</>"
 
