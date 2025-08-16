@@ -57,7 +57,7 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			"<Default>Launches %d bolts of fire, exploding on impact and dealing: </>"
 			// ScaledDamage
 			"<Damage>%d</>"
-			"<Default> fire damge with a chance to burn</>\n\n"
+			"<Default> fire damge with a chance to burn.</>\n\n"
 		),
 
 			// Values 
@@ -91,7 +91,7 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		"<Default>Launches %d bolts of fire, exploding on impact and dealing: </>"
 		// ScaledDamage
 		"<Damage>%d</>"
-		"<Default> fire damge with a chance to burn</>\n\n"
+		"<Default> fire damge with a chance to burn.</>\n\n"
 	),
 
 		// Values 
