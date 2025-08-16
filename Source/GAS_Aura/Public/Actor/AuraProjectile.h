@@ -19,7 +19,7 @@ class GAS_AURA_API AAuraProjectile : public AActor
 public:	
 	AAuraProjectile();
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
@@ -57,5 +57,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
 
+	UFUNCTION(BlueprintCallable)
 	void OnHit();
 };
