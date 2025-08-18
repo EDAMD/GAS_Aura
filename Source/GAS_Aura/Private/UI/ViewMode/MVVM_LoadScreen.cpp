@@ -11,14 +11,17 @@ void UMVVM_LoadScreen::InitializeLoadSlots()
 {
 	LoadSlot_0 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_0->PlayerName = FString("LoadSlot_0");
+	LoadSlot_0->SlotIndex = 0;
 	LoadSlots.Add(0, LoadSlot_0);
 
 	LoadSlot_1 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_1->PlayerName = FString("LoadSlot_1");
+	LoadSlot_1->SlotIndex = 1;
 	LoadSlots.Add(1, LoadSlot_1);
 
 	LoadSlot_2 = NewObject<UMVVM_LoadSlot>(this, LoadSlotViewModelClass);
 	LoadSlot_2->PlayerName = FString("LoadSlot_2");
+	LoadSlot_2->SlotIndex = 2;
 	LoadSlots.Add(2, LoadSlot_2);
 }
 
@@ -50,12 +53,14 @@ void UMVVM_LoadScreen::SelectSlotButtonPressed(int32 Slot)
 		if (LoadSlot.Key == Slot)
 		{
 			LoadSlot.Value->EnableSelectSlotButton.Broadcast(false);
+			
 		}
 		else
 		{
 			LoadSlot.Value->EnableSelectSlotButton.Broadcast(true);
 		}
 	}
+	SelectedSlot = LoadSlots[Slot];
 }
 
 void UMVVM_LoadScreen::LoadData()
@@ -73,5 +78,20 @@ void UMVVM_LoadScreen::LoadData()
 		LoadSlot.Value->SlotStatus = SaveSlotStatus;
 		// 根据 SlotStatus 切换 Slot Switcher
 		LoadSlot.Value->InitializeSlot();
+	}
+}
+
+void UMVVM_LoadScreen::DeleteButtonPressed()
+{
+	if (IsValid(SelectedSlot))
+	{
+		AAuraGameModeBase::DeleteSlot(SelectedSlot->LoadSlotName, SelectedSlot->SlotIndex);
+
+		// 切换 WidgetSwitcher 到 Vacant 页面(Active Widget Index 0)
+		SelectedSlot->SlotStatus = Vacant;
+		SelectedSlot->InitializeSlot();
+
+		// 通知 SelectButton Enable
+		SelectedSlot->EnableSelectSlotButton.Broadcast(true);
 	}
 }

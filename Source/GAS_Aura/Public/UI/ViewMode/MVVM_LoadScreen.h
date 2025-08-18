@@ -51,6 +51,9 @@ public:
 	// 从磁盘文件中获取存档, 使用存档内容初始化到内存中
 	void LoadData();
 
+	UFUNCTION(BlueprintCallable)
+	void DeleteButtonPressed();
+
 private:
 	UPROPERTY()
 	TMap<int32, UMVVM_LoadSlot*> LoadSlots;
@@ -63,4 +66,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMVVM_LoadSlot> LoadSlot_2;
+
+	UPROPERTY()
+	TObjectPtr<UMVVM_LoadSlot> SelectedSlot;
 };
