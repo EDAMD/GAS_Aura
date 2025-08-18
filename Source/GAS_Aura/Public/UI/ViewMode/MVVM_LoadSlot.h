@@ -15,13 +15,10 @@ UCLASS()
 class GAS_AURA_API UMVVM_LoadSlot : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex SetWidgetSwitcherIndex;
-
-	UPROPERTY()
-	FString PlayerName;
 
 	UPROPERTY()
 	FString LoadSlotName;
@@ -30,4 +27,13 @@ public:
 	int32 SlotIndex;
 
 	void InitializeSlot();
+
+	/* Filed Notifies */
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString PlayerName;
+
+	void SetPlayerName(FString InPlayerName);
+
+	FString GetPlayerName() const { return PlayerName; }
 };
