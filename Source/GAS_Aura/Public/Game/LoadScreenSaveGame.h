@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "UI/ViewMode/MVVM_LoadScreen.h"
 #include "LoadScreenSaveGame.generated.h"
 
 /**
@@ -22,4 +23,7 @@ public:
 
 	UPROPERTY()
 	FString PlayerName = FString("Default Name");
+
+	UPROPERTY()
+	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = ESaveSlotStatus::Vacant;
 };

@@ -8,6 +8,14 @@
 
 class UMVVM_LoadSlot;
 
+UENUM(BlueprintType)
+enum ESaveSlotStatus
+{
+	Vacant,
+	EnterName,
+	Taken,
+};
+
 /**
  *
  */
@@ -34,6 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SelectSlotButtonPressed(int32 Slot);
+
+	// 从磁盘文件中获取存档, 使用存档内容初始化到内存中
+	void LoadData();
 
 private:
 	UPROPERTY()

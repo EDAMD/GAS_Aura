@@ -10,6 +10,7 @@ class UCharacterClassInfo;
 class UAbilityInfo;
 class UMVVM_LoadSlot;
 class USaveGame;
+class ULoadScreenSaveGame;
 
 /**
  * 
@@ -31,4 +32,6 @@ public:
 
 
 	void SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex);
+
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex);
 };

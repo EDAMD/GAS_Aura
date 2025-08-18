@@ -21,4 +21,7 @@ void ALoadScreenHUD::BeginPlay()
 
 	// 通知 LoadScreen 的子组件(三个存档Slot) 去设置ViewModel
 	LoadScreenWidget->BlueprintInitializeWidget();
+
+	// 从磁盘文件中获取存档, 使用存档内容初始化到内存中
+	LoadScreenViewModel->LoadData();
 }
