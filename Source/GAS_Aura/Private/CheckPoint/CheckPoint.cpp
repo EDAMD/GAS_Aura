@@ -3,12 +3,13 @@
 
 #include "CheckPoint/CheckPoint.h" 
 #include "Components/SphereComponent.h"
+#include "Interaction/PlayerInterface.h"
 
 
 ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {  
-    PrimaryActorTick.bCanEverTick = true;  
+    PrimaryActorTick.bCanEverTick = false;  
 
 	CheckPointMesh = CreateDefaultSubobject<UStaticMeshComponent>("CheckPointMesh");
 	CheckPointMesh->SetupAttachment(GetRootComponent());
@@ -29,8 +30,9 @@ void ACheckPoint::BeginPlay()
 
 void ACheckPoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(FName("Player")))
+	if (OtherActor->Implements<UPlayerInterface>())
 	{
+		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		HandleGlowEffects();
 	}
 }
