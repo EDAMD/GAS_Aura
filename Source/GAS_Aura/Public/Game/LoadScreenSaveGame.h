@@ -29,4 +29,7 @@ public:
 
 	UPROPERTY()
 	FString MapName = FString("Default Map");
+
+	UPROPERTY()
+	FName PlayerStartTag;
 };
