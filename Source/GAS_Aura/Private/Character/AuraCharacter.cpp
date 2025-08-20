@@ -17,6 +17,7 @@
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadScreenSaveGame.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -60,7 +61,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	LoadProgress();
 
 	// TODO: 从Disk中获取Ability信息并初始化
-	AddCharacterAbilities();
+	// AddCharacterAbilities();(LoadProgress中已经初始化)
 }
 
 void AAuraCharacter::LoadProgress()
@@ -71,13 +72,6 @@ void AAuraCharacter::LoadProgress()
 		ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData();
 		if (SaveData == nullptr) return;
 
-		if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
-		{
-			AuraPlayerState->SetLevel(SaveData->PlayerLevel);
-			AuraPlayerState->SetXP(SaveData->XP);
-			AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
-			AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
-		}
 
 		// 第一次开始游戏 第一次触发读取存档
 		if (SaveData->bFirstTimeLoadIn)
@@ -88,6 +82,17 @@ void AAuraCharacter::LoadProgress()
 		else // 第二次开始, 从 Disk 中读取信息
 		{
 
+			if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+			{
+				AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+				AuraPlayerState->SetXP(SaveData->XP);
+				AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+				AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
+			}
+
+			// TODO: 从Disk中获取Ability信息并初始化
+
+			UAuraAbilitySystemLibrary::InitializedDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 		}
 	}
 }
