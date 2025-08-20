@@ -54,6 +54,10 @@ public:
 
 	virtual void OnRep_Burned() override;
 
+protected:
+	// 从磁盘中加载信息
+	void LoadProgress();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;

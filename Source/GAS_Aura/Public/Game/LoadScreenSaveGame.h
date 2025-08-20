@@ -33,6 +33,9 @@ public:
 	UPROPERTY()
 	FName PlayerStartTag;
 
+	UPROPERTY()
+	bool bFirstTimeLoadIn = true;
+
 	/* Player */
 
 	UPROPERTY()

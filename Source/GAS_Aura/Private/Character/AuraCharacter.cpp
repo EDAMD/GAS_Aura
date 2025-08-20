@@ -56,8 +56,42 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// Init Ability Actor Info for the Server
 	InitAbilityActorInfo();
 
+	// 从 Disk 中获取Attirbute信息并进行初始化
+	LoadProgress();
+
+	// TODO: 从Disk中获取Ability信息并初始化
 	AddCharacterAbilities();
 }
+
+void AAuraCharacter::LoadProgress()
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (AuraGameMode)
+	{
+		ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData();
+		if (SaveData == nullptr) return;
+
+		if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+		{
+			AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+			AuraPlayerState->SetXP(SaveData->XP);
+			AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+			AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
+		}
+
+		// 第一次开始游戏 第一次触发读取存档
+		if (SaveData->bFirstTimeLoadIn)
+		{
+			InitializedDefaultAttributes();
+			AddCharacterAbilities();
+		}
+		else // 第二次开始, 从 Disk 中读取信息
+		{
+
+		}
+	}
+}
+
 
 void AAuraCharacter::OnRep_PlayerState()
 {
@@ -106,8 +140,9 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
-
-
+		
+		SaveData->bFirstTimeLoadIn = false;
+		
 		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }
@@ -278,7 +313,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 
 	// 使用GE初始化属性
-	InitializedDefaultAttributes();
+	// 弃用, 从Disk中读取信息并初始化
+	// InitializedDefaultAttributes();
 
 }
 
