@@ -10,14 +10,6 @@ class UMVVM_LoadSlot;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSlotSelected);
 
-UENUM(BlueprintType)
-enum ESaveSlotStatus
-{
-	Vacant,
-	EnterName,
-	Taken,
-};
-
 /**
  *
  */

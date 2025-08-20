@@ -18,6 +18,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadScreenSaveGame.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -145,9 +146,31 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
-		
+
 		SaveData->bFirstTimeLoadIn = false;
+
+		UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+		FForEachAbility SaveAbilityDelegate;
+		SaveAbilityDelegate.BindLambda(
+			[this, AuraASC, SaveData](const FGameplayAbilitySpec& AbilitySpec)
+			{
+				const FGameplayTag AbilityTag = AuraASC->GetAbilityTagFromSpec(AbilitySpec);
+				UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(this);
+				FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+
+				FSavedAbility SavedAbility;
+				SavedAbility.GameplayAbility = Info.Ability;
+				SavedAbility.AbilityTag = AbilityTag;
+				SavedAbility.AbilitySlot = AuraASC->GetSlotFromAbilityTag(AbilityTag);
+				SavedAbility.AbilityStatus = AuraASC->GetStatusFromAbilityTag(AbilityTag);
+				SavedAbility.AbilityLevel = AbilitySpec.Level;
+				SavedAbility.AbilityType = Info.AbilityType;
+
+				SaveData->SavedAbilities.Add(SavedAbility);
+			});
 		
+		AuraASC->ForEachAbility(SaveAbilityDelegate);
+
 		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }
