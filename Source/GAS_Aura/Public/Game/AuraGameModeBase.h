@@ -20,6 +20,9 @@ class GAS_AURA_API AAuraGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
@@ -40,13 +43,11 @@ public:
 	TMap<FString, TSoftObjectPtr<UWorld>> Maps;
 
 	void SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex);
-
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex);
-
 	static void DeleteSlot(const FString& SlotName, int32 SlotIndex);
-
 	void TravelToMap(UMVVM_LoadSlot* Slot);
 
-protected:
-	virtual void BeginPlay() override;
+	virtual AActor* ChoosePlayerStart(AController* Player);
+
+
 };
