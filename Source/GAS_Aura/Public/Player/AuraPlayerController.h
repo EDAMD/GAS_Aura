@@ -16,7 +16,13 @@ class USplineComponent;
 class UDamageTextComponent;
 class UNiagaraSystem;
 class AMagicCircle;
-class IHighlightInterface;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting,
+};
 
 /**
  * 
@@ -59,9 +65,12 @@ private:
 	void ShiftReleased() { bShiftKeyDown = false; }
 	bool bShiftKeyDown = false;
 
-	IHighlightInterface* LastActor;
-	IHighlightInterface* ThisActor;
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
 	FHitResult CursorHit;
+
+	static void HighlightActor(AActor* InActor);
+	static void UnHighlightActor(AActor* InActor);
 
 	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
@@ -79,11 +88,12 @@ private:
 	UAuraAbilitySystemComponent* GetASC();
 
 	/* Click to Move Variable */
-	FVector CachedDestination = FVector::Zero();			// 鼠标点击位置
-	float FollowTime = 0.f;									// 按键按压时间
-	float ShortPressThreshold = 0.5f;						// 短按判定阈值
-	bool bAutoRunning = false;								// 是否自动移动
-	bool bTargeting = false;								// 鼠标是否指向敌人
+	FVector CachedDestination = FVector::Zero();							// 鼠标点击位置
+	float FollowTime = 0.f;													// 按键按压时间
+	float ShortPressThreshold = 0.5f;										// 短按判定阈值
+	bool bAutoRunning = false;												// 是否自动移动
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;		// 鼠标是否指向敌人
+
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;					// 自动移动访问半径

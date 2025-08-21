@@ -19,6 +19,7 @@
 #include "Components/DecalComponent.h"
 #include "GAS_Aura/GAS_Aura.h"
 #include "Interaction/HighlightInterface.h"
+#include "Interaction/EnemyInterface.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -159,19 +160,30 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 }
 
+void AAuraPlayerController::HighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_HighlightActor(InActor);
+	}
+}
+
+void AAuraPlayerController::UnHighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_UnHighlightActor(InActor);
+	}
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
 		// 如果存在 这个标签, 取消高亮显示
-		if (LastActor)
-		{
-			LastActor->UnHightlightActor();
-		}
-		if (ThisActor)
-		{
-			ThisActor->UnHightlightActor();
-		}
+		UnHighlightActor(ThisActor);
+		UnHighlightActor(LastActor);
+
 		LastActor = nullptr;
 		ThisActor = nullptr;
 		return;
@@ -181,7 +193,14 @@ void AAuraPlayerController::CursorTrace()
 	if (!CursorHit.bBlockingHit) return;
 
 	LastActor = ThisActor;
-	ThisActor = Cast<IHighlightInterface>(CursorHit.GetActor());
+	if (IsValid(CursorHit.GetActor()) && CursorHit.GetActor()->Implements<UHighlightInterface>())
+	{
+		ThisActor = CursorHit.GetActor();
+	}
+	else
+	{
+		ThisActor = nullptr;
+	}
 
 	/**
 	 * 光标的射线追踪, 有以下几种情况
@@ -238,17 +257,9 @@ void AAuraPlayerController::CursorTrace()
 
 	if (LastActor != ThisActor)
 	{
-		if (LastActor)
-		{
-			LastActor->UnHightlightActor();
-		}
-		if (ThisActor)
-		{
-			ThisActor->HightlightActor();
-		}
+		UnHighlightActor(LastActor);
+		HighlightActor(LastActor);
 	}
-
-
 }
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -261,10 +272,18 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		// 判断鼠标点击目标 是否是敌人
-		bTargeting = ThisActor ? true : false;
-		// 还不能确定是否是短按,因此不能确定是否自动移动
-		bAutoRunning = false;
+		if (IsValid(ThisActor))
+		{		
+			// 判断鼠标点击目标 是否是敌人
+			TargetingStatus = ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingNonEnemy;
+
+			// 还不能确定是否是短按,因此不能确定是否自动移动
+			bAutoRunning = false;
+		}
+		else
+		{
+			TargetingStatus = ETargetingStatus::NotTargeting;
+		}
 	}
 	if (GetASC())
 	{
@@ -294,7 +313,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		GetASC()->AbilityInputTagReleased(InputTag);
 	}
 
-	if (!bTargeting || !bShiftKeyDown)
+	// 自动寻路
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy || !bShiftKeyDown)
 	{
 		APawn* ControlledPawn = GetPawn();
 		if ((FollowTime <= ShortPressThreshold))
@@ -325,7 +345,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 		}
 		FollowTime = 0.f;
-		bTargeting = false;
+		TargetingStatus = ETargetingStatus::NotTargeting;
 	}
 }
 
@@ -348,7 +368,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	}
 
 	// 鼠标点击敌人, 尝试激活技能
-	if (bTargeting || bShiftKeyDown)
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftKeyDown)
 	{
 		if (GetASC())
 		{
