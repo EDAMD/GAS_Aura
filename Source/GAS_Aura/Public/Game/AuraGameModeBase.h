@@ -52,6 +52,7 @@ public:
 	ULoadScreenSaveGame* RetrieveInGameSaveData();
 	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject);
 
+	void SaveWorldState(UWorld* World);
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
