@@ -91,7 +91,11 @@ void AAuraCharacter::LoadProgress()
 				AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
 			}
 
-			// TODO: 从Disk中获取Ability信息并初始化
+			// 从Disk中获取Ability信息并初始化
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+			{
+				AuraASC->AddCharacterAbilitiesFromSaveData(SaveData);
+			}
 
 			UAuraAbilitySystemLibrary::InitializedDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 		}
@@ -149,6 +153,8 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 
 		SaveData->bFirstTimeLoadIn = false;
 
+		SaveData->SavedAbilities.Empty();
+
 		UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 		FForEachAbility SaveAbilityDelegate;
 		SaveAbilityDelegate.BindLambda(
@@ -166,7 +172,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 				SavedAbility.AbilityLevel = AbilitySpec.Level;
 				SavedAbility.AbilityType = Info.AbilityType;
 
-				SaveData->SavedAbilities.Add(SavedAbility);
+				SaveData->SavedAbilities.AddUnique(SavedAbility);
 			});
 		
 		AuraASC->ForEachAbility(SaveAbilityDelegate);
