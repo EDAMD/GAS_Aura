@@ -18,6 +18,7 @@
 #include "Actor/MagicCircle.h"
 #include "Components/DecalComponent.h"
 #include "GAS_Aura/GAS_Aura.h"
+#include "Interaction/HighlightInterface.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -180,7 +181,7 @@ void AAuraPlayerController::CursorTrace()
 	if (!CursorHit.bBlockingHit) return;
 
 	LastActor = ThisActor;
-	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+	ThisActor = Cast<IHighlightInterface>(CursorHit.GetActor());
 
 	/**
 	 * 光标的射线追踪, 有以下几种情况

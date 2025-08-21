@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Interaction/EnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
 class UAuraAbilitySystemComponent;
@@ -17,6 +16,7 @@ class USplineComponent;
 class UDamageTextComponent;
 class UNiagaraSystem;
 class AMagicCircle;
+class IHighlightInterface;
 
 /**
  * 
@@ -59,8 +59,8 @@ private:
 	void ShiftReleased() { bShiftKeyDown = false; }
 	bool bShiftKeyDown = false;
 
-	IEnemyInterface* LastActor;
-	IEnemyInterface* ThisActor;
+	IHighlightInterface* LastActor;
+	IHighlightInterface* ThisActor;
 	FHitResult CursorHit;
 
 	void Move(const FInputActionValue& InputActionValue);

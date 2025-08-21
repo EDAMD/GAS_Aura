@@ -6,6 +6,7 @@
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "Interaction/HighlightInterface.h"
 #include "AuraEnemyCharacter.generated.h"
 
 class UWidgetComponent;
@@ -16,7 +17,7 @@ class UNiagaraSystem;
  * 
  */
 UCLASS()
-class GAS_AURA_API AAuraEnemyCharacter : public AAuraCharacterBase, public IEnemyInterface
+class GAS_AURA_API AAuraEnemyCharacter : public AAuraCharacterBase, public IEnemyInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 
@@ -24,10 +25,12 @@ public:
 	AAuraEnemyCharacter();
 	virtual void PossessedBy(AController* NewController)override;
 
-	/* Enemy Interface */
+	/* Highlight Interface */
 	virtual void HightlightActor() override;
 	virtual void UnHightlightActor() override;
+	/* End Highlight Interface */
 
+	/* Enemy Interface */
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() override;
 	/* End Enemy Interface */
