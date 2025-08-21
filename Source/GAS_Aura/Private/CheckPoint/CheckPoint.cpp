@@ -25,16 +25,29 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	CheckPointMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
+	CheckPointMesh->SetCustomDepthStencilValue(CustomDepthStencilValueOverride);
 	CheckPointMesh->MarkRenderStateDirty();
 
 	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
 	MoveToComponent->SetupAttachment(GetRootComponent());
 }
 
+void ACheckPoint::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (bBindOverlapCallback)
+	{
+		Sphere->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereOverlap);
+	}
+}
+
 void ACheckPoint::HighlightActor_Implementation()
 {
-	CheckPointMesh->SetRenderCustomDepth(true);
+	if (!bReached)
+	{
+		CheckPointMesh->SetRenderCustomDepth(true);
+	}
 }
 
 void ACheckPoint::UnHighlightActor_Implementation()
@@ -53,11 +66,6 @@ void ACheckPoint::LoadActor_Implementation()
 	{
 		HandleGlowEffects();
 	}
-}
-
-void ACheckPoint::BeginPlay()
-{
-    Sphere->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereOverlap);
 }
 
 void ACheckPoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

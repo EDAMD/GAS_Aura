@@ -22,11 +22,7 @@ class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface, pub
 public:
 	ACheckPoint(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(BlueprintReadOnly, SaveGame)
-	bool bReached = false;
-
 	/* Highlight Interface */
-
 	virtual void HighlightActor_Implementation() override;
 	virtual void UnHighlightActor_Implementation() override;
 	virtual void SetMoveToLocation_Implementation(FVector& OutDestination) override;
@@ -40,6 +36,12 @@ public:
 	virtual void LoadActor_Implementation() override;
 	/* End Save Interface */
 
+
+	UPROPERTY(BlueprintReadWrite, SaveGame)
+	bool bReached = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool bBindOverlapCallback = true;
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,6 +51,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CheckPointReached(UMaterialInstanceDynamic* DynamicMaterialInstance);
 
+	UFUNCTION(BlueprintCallable)
 	void HandleGlowEffects();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
