@@ -258,7 +258,7 @@ void AAuraPlayerController::CursorTrace()
 	if (LastActor != ThisActor)
 	{
 		UnHighlightActor(LastActor);
-		HighlightActor(LastActor);
+		HighlightActor(ThisActor);
 	}
 }
 
