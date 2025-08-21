@@ -24,6 +24,10 @@ class GAS_AURA_API IHighlightInterface
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void HighlightActor();
+
 	UFUNCTION(BlueprintNativeEvent)
 	void UnHighlightActor();
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void SetMoveToLocation(UPARAM(ref) FVector& OutDestination);
 };

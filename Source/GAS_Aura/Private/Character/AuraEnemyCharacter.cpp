@@ -38,6 +38,11 @@ AAuraEnemyCharacter::AAuraEnemyCharacter()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(RootComponent);
 
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	GetMesh()->MarkRenderStateDirty();
+	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	Weapon->MarkRenderStateDirty();
+
 	BaseWalkSpeed = 250.f;
 }
 
@@ -103,6 +108,23 @@ void AAuraEnemyCharacter::PossessedBy(AController* NewController)
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
+void AAuraEnemyCharacter::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	// Do not change Destination
+}
+
+void AAuraEnemyCharacter::HighlightActor_Implementation()
+{
+	GetMesh()->SetRenderCustomDepth(true);
+	Weapon->SetRenderCustomDepth(true);
+}
+
+void AAuraEnemyCharacter::UnHighlightActor_Implementation()
+{
+	GetMesh()->SetRenderCustomDepth(false);
+	Weapon->SetRenderCustomDepth(false);
+}
+
 void AAuraEnemyCharacter::HitReactTagChanged(FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReaction = NewCount > 0 ? true : false;
@@ -145,20 +167,6 @@ void AAuraEnemyCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 N
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
 	}
-}
-
-void AAuraEnemyCharacter::HighlightActor_Implementation()
-{
-	GetMesh()->SetRenderCustomDepth(true);
-	Weapon->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-}
-
-void AAuraEnemyCharacter::UnHighlightActor_Implementation()
-{
-	GetMesh()->SetRenderCustomDepth(false);
-	Weapon->SetRenderCustomDepth(false);
 }
 
 void AAuraEnemyCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)

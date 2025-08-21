@@ -8,6 +8,7 @@
 #include "Game/AuraGameModeBase.h"
 
 
+
 ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {  
@@ -23,6 +24,27 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	CheckPointMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
+	CheckPointMesh->MarkRenderStateDirty();
+
+	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
+	MoveToComponent->SetupAttachment(GetRootComponent());
+}
+
+void ACheckPoint::HighlightActor_Implementation()
+{
+	CheckPointMesh->SetRenderCustomDepth(true);
+}
+
+void ACheckPoint::UnHighlightActor_Implementation()
+{
+	CheckPointMesh->SetRenderCustomDepth(false);
+}
+
+void ACheckPoint::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	OutDestination = MoveToComponent->GetComponentLocation();
 }
 
 void ACheckPoint::LoadActor_Implementation()

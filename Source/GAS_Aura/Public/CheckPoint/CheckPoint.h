@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
 #include "Interaction/SaveInterface.h"
+#include "Interaction/HighlightInterface.h"
+#include "GAS_Aura/GAS_Aura.h"
 #include "CheckPoint.generated.h"
 
 class USphereComponent;
@@ -13,7 +15,7 @@ class USphereComponent;
  * 
  */
 UCLASS()
-class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface
+class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 
@@ -22,6 +24,16 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	bool bReached = false;
+
+	/* Highlight Interface */
+
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
+	virtual void SetMoveToLocation_Implementation(FVector& OutDestination) override;
+	/* End Highlight Interface */
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 CustomDepthStencilValueOverride = CUSTOM_DEPTH_TAN;
 
 	/* Save Interface */
 	virtual bool ShouldLoadTransform_Implementation() override { return false; }
@@ -41,6 +53,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> CheckPointMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> MoveToComponent;
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
