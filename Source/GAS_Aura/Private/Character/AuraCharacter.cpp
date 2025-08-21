@@ -61,6 +61,11 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// 从 Disk 中获取Attirbute信息并进行初始化
 	LoadProgress();
 
+	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		AuraGameMode->LoadWordlState(GetWorld());
+	}
+
 	// TODO: 从Disk中获取Ability信息并初始化
 	// AddCharacterAbilities();(LoadProgress中已经初始化)
 }

@@ -10,6 +10,7 @@
 #include "EngineUtils.h"
 #include "Interaction/SaveInterface.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "GAS_Aura/AuraLogChannels.h"
 
 void AAuraGameModeBase::BeginPlay()
 {
@@ -35,7 +36,7 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlot->GetLoadSlotName(), SlotIndex);
 }
 
-ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex)
+ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const
 {
 	USaveGame* SaveGameObject = nullptr;
 	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex	))
@@ -88,7 +89,7 @@ void AAuraGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* SaveObject)
 	UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameLoadSlotIndex);
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World)
+void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 {
 	FString WorldName = World->GetName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
@@ -118,11 +119,12 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World)
 			SavedActor.ActorName = Actor->GetFName();
 			SavedActor.Transform = Actor->GetTransform();
 
+			// 指定存储的空间
 			FMemoryWriter MemoryWriter(SavedActor.Bytes);
-
 			FObjectAndNameAsStringProxyArchive Archive(MemoryWriter, true);
 			Archive.ArIsSaveGame = true;
 
+			// 将 Actor 中的 SaveGame 标记的变量 序列化 到 存储空间
 			Actor->Serialize(Archive);
 
 			SavedMap.Actors.AddUnique(SavedActor);
@@ -137,6 +139,51 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World)
 		}
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, AuraGI->LoadSlotName, AuraGI->LoadSlotIndex);
+	}
+}
+
+void AAuraGameModeBase::LoadWordlState(UWorld* World) const
+{
+	FString WorldName = World->GetName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	UAuraGameInstance* AuraGI = Cast<UAuraGameInstance>(GetGameInstance());
+	check(AuraGI);
+
+	if (UGameplayStatics::DoesSaveGameExist(AuraGI->LoadSlotName, AuraGI->LoadSlotIndex))
+	{
+		ULoadScreenSaveGame* SaveGame = Cast<ULoadScreenSaveGame>(GetSaveSlotData(AuraGI->LoadSlotName, AuraGI->LoadSlotIndex));
+		if (SaveGame == nullptr)
+		{
+			UE_LOG(LogAura, Error, TEXT("Faild to Load slot [%s]"), *AuraGI->LoadSlotName);
+			return;
+		}
+
+		for (FActorIterator It(World); It; ++It)
+		{
+			AActor* Actor = *It;
+
+			if (!Actor->Implements<USaveInterface>()) continue;
+
+			for (FSavedActor& SavedActor : SaveGame->GetSavedMapWithMapName(WorldName).Actors)
+			{
+				if (SavedActor.ActorName == Actor->GetName())
+				{
+					if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+					{
+						Actor->SetActorTransform(SavedActor.Transform);
+					}
+
+					FMemoryReader MemoryReader(SavedActor.Bytes);
+					FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+					Archive.ArIsSaveGame = true;
+
+					Actor->Serialize(Archive); // 将二进制字节转换为变量
+
+					ISaveInterface::Execute_LoadActor(Actor);
+				}
+			}
+		}
 	}
 }
 
