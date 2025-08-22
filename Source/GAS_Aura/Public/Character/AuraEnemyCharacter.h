@@ -42,6 +42,8 @@ public:
 	virtual TArray<FTagedMontage> GetAttackMontages_Implementation() override;
 	/* End Combat Interface*/
 
+	void SetLevel(int32 InLevel) { Level = InLevel; }
+
 	UPROPERTY(BlueprintReadOnly)
 	bool bHightlighted = false;
 
@@ -59,8 +61,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	bool bHitReaction = false;
-
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.f;

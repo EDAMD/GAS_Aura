@@ -46,7 +46,6 @@ public:
 	virtual ECharacterClass GetCharacterClass_Implementation()override;
 
 	FOnASCRegistered OnASCRegistered;
-	//FOnDeath OnDeath;
 	FOnDeathSignature OnDeathDelegate;
 
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
@@ -80,6 +79,8 @@ public:
 
 	UFUNCTION()
 	virtual void OnRep_Burned();
+
+	void SetCharacterClass(ECharacterClass InClass) { CharacterClass = InClass; }
 
 protected:
 
