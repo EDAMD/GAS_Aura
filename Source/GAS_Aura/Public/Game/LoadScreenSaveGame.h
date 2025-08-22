@@ -101,7 +101,10 @@ public:
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = ESaveSlotStatus::Vacant;
 
 	UPROPERTY()
-	FString MapName = FString("Default Map");
+	FString MapName = FString("Default Map Name");
+
+	UPROPERTY()
+	FString MapAssetName = FString("Default Map Asset Name");
 
 	UPROPERTY()
 	FName PlayerStartTag;
