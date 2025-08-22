@@ -33,6 +33,8 @@ public:
 
 	AAuraEffectActor();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -46,6 +48,39 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnEndOverlap(AActor* Target);
 
+	/* Rotate Movement */
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector CalculatedLocation;
+
+	UPROPERTY(BlueprintReadOnly)
+	FRotator CalculatedRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	bool bRotates = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	float RotationRate = 45.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	bool bSinusoidalMovement = false;
+
+	UFUNCTION(BlueprintCallable)
+	void StartSinusoidalMovement(); // 正弦运动函数
+
+	UFUNCTION(BlueprintCallable)
+	void StartRotation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	float SineAmplitude = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	float SinePeriodConstant = 1; // 角速度(ω)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Rotate Movement")
+	FVector InitialLocation;
+
+	/* End Rotate Movement */
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effect")
 	bool bDestroyOnEffectApplication = false;
@@ -80,8 +115,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effect")
 	float ActorLevel = 1.f;
 
-
 private:
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 
+	/* Rotate Movement */
+	float RunningTime = 0.f;
+	void ItemMovement(float DeltaTimes); // 旋转函数
+	/* End Rotate Movement */
 };

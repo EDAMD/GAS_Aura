@@ -276,14 +276,14 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		{		
 			// 判断鼠标点击目标 是否是敌人
 			TargetingStatus = ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingNonEnemy;
-
-			// 还不能确定是否是短按,因此不能确定是否自动移动
-			bAutoRunning = false;
 		}
 		else
 		{
 			TargetingStatus = ETargetingStatus::NotTargeting;
 		}
+
+		// 还不能确定是否是短按,因此不能确定是否自动移动
+		bAutoRunning = false;
 	}
 	if (GetASC())
 	{
