@@ -26,6 +26,7 @@ public:
 
 	/* Combat Interface*/
 	virtual int32 GetPlayerLevel_Implementation() override;
+	virtual void Die(const FVector DeathImpulse) override;
 	/* End Combat Interface*/
 
 	/* Player Interface */
@@ -53,6 +54,11 @@ public:
 	virtual void OnRep_Stunned() override;
 
 	virtual void OnRep_Burned() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DeathTime = 5.f;     // 死亡重生倒计时
+
+	FTimerHandle DeathTimer;   // 死亡重生计时器
 
 protected:
 	// 从磁盘中加载信息
